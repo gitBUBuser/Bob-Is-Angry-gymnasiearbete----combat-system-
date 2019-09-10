@@ -15,15 +15,24 @@ public class PlayerController : Entity , IMoving
 
     float jumpTimeCounter;
     float jumpTime = 0.25f;
+    float jumpForce = 14f;
+    float slideTime = 0.65f;
+    float slideForce = 15f;
+    float slideTimeCounter;
+
+    float xVel;
+
     bool wasGrounded;
     bool grounded;
     bool isJumping;
+    bool isSliding;
     
     public enum MovementState
     {
         Airborne,
         G_Idle,
         G_Running,
+        G_Sliding
     }
 
 
@@ -31,20 +40,35 @@ public class PlayerController : Entity , IMoving
     protected override void Start()
     {
         base.Start();
+        xVel = 0;
         jumpTimeCounter = jumpTime;
-        Speed = 6;
+        slideTimeCounter = slideTime;
+        Speed = 8;
     }
 
 
     private void Update()
     {
-        float x = Input.GetAxisRaw("Horizontal");
-        Velocity = new Vector2(x * Speed, Velocity.y);
+        if (Velocity.x == 0 && grounded)
+            state = MovementState.G_Idle;
+        else if (!grounded)
+            state = MovementState.Airborne;
+        else
+            state = MovementState.G_Running;
+
+
+        if (!isSliding)
+        {
+            xVel = Mathf.Lerp(xVel, Input.GetAxisRaw("Horizontal"), Time.deltaTime * 20);
+
+            Velocity = new Vector2(xVel * Speed, Velocity.y);
+        }
+        
 
         if (Input.GetButtonDown("Jump") && grounded)
         {
             isJumping = true;
-            Velocity = new Vector2(Velocity.x, 8f);
+            Velocity = new Vector2(Velocity.x, jumpForce);
         }
 
         
@@ -53,7 +77,7 @@ public class PlayerController : Entity , IMoving
             
             if(jumpTimeCounter > 0)
             {
-                Velocity = new Vector2(Velocity.x, 8f);
+                Velocity = new Vector2(Velocity.x, jumpForce);
                 jumpTimeCounter -= Time.deltaTime;
             }
             else
@@ -71,12 +95,45 @@ public class PlayerController : Entity , IMoving
             jumpTimeCounter = jumpTime;
         }
 
-        if(Velocity.x == 0 && grounded)
-            state = MovementState.G_Idle;
-        else if (!grounded)
-            state = MovementState.Airborne;
+        if(state == MovementState.G_Running)
+        {
+            
+            if (Input.GetButtonDown("Crouch") && !isSliding)
+            {
+                xVel = (int)Input.GetAxisRaw("Horizontal");
+                slideTimeCounter = slideTime;
+                isSliding = true;
+                transform.localScale = new Vector3(1, 0.5f);
+            }
+
+            if (Input.GetButton("Crouch") && isSliding)
+            {
+                if(slideTimeCounter > 0)
+                {
+                    slideTimeCounter -= Time.deltaTime;
+                    Velocity = new Vector2(xVel * slideForce, Velocity.y);
+                }
+                else
+                {
+                    transform.localScale = new Vector3(1, 1f);
+                    isSliding = false;
+                    slideTimeCounter = 0;
+                }
+                  
+                
+            }
+            else
+            {
+                transform.localScale = new Vector3(1, 1f);
+                isSliding = false;
+            }           
+        }
         else
-            state = MovementState.G_Running;
+        {
+            isSliding = false;
+        }
+
+        
     }
 
     public void Move()
@@ -88,8 +145,8 @@ public class PlayerController : Entity , IMoving
         }
         else if (!wasGrounded)
         {          
-            Bounds bounds = Physics2D.OverlapArea(new Vector2(transform.position.x - 0.5f, transform.position.y - 0.5f),
-            new Vector2(transform.position.x + 0.5f, transform.position.y - 0.51f + (Velocity.y * Time.fixedDeltaTime)), groundLayer).bounds;
+            Bounds bounds = Physics2D.OverlapArea(new Vector2(transform.position.x - (0.5f * transform.lossyScale.x), transform.position.y - (0.5f * transform.lossyScale.y)),
+            new Vector2(transform.position.x + (0.5f * transform.lossyScale.x), transform.position.y - (0.51f * transform.lossyScale.y) + (Velocity.y * Time.fixedDeltaTime)), groundLayer).bounds;
             float yPos = bounds.center.y + bounds.extents.y + GetComponent<Collider2D>().bounds.extents.y;
             Velocity = new Vector2(Velocity.x, 0);
             RigidBody.position = new Vector2(RigidBody.position.x, yPos);
@@ -101,8 +158,8 @@ public class PlayerController : Entity , IMoving
 
     bool Grounded()
     {
-        return Physics2D.OverlapArea(new Vector2(transform.position.x - 0.5f, transform.position.y - 0.5f),
-            new Vector2(transform.position.x + 0.5f, transform.position.y - 0.51f + (Velocity.y * Time.fixedDeltaTime)), groundLayer);
+        return Physics2D.OverlapArea(new Vector2(transform.position.x - (0.5f * transform.lossyScale.x), transform.position.y - (0.5f * transform.lossyScale.y)),
+            new Vector2(transform.position.x + (0.5f * transform.lossyScale.x), transform.position.y - (0.51f * transform.lossyScale.y) + (Velocity.y * Time.fixedDeltaTime)), groundLayer);
     }
 
     
