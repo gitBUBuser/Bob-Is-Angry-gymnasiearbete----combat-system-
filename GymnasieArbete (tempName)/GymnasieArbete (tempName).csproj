@@ -662,7 +662,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Entity.cs" />
+    <Compile Include="Assets\Scripts\Health.cs" />
     <Compile Include="Assets\Scripts\IMoving.cs" />
+    <Compile Include="Assets\Scripts\PlayerCombat.cs" />
     <Compile Include="Assets\Scripts\PlayerController.cs" />
   </ItemGroup>
   <ItemGroup>
