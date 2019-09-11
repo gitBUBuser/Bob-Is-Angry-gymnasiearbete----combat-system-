@@ -9,6 +9,7 @@ public class PlayerController : Entity , IMoving
     [SerializeField]
     Transform feetTransform;
 
+    [SerializeField]
     MovementState state;
 
 
@@ -84,7 +85,10 @@ public class PlayerController : Entity , IMoving
 
 
         xVel = Mathf.Lerp(xVel, Input.GetAxisRaw("Horizontal"), Time.deltaTime * 20);
-
+        if(Mathf.Abs(xVel) < 0.01f)
+        {
+            xVel = 0;
+        }
         Velocity = new Vector2(xVel * Speed, Velocity.y);
 
 
