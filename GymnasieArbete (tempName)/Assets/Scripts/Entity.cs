@@ -7,7 +7,7 @@ public class Entity : MonoBehaviour
     Rigidbody2D rigidBody;
 
     public Rigidbody2D RigidBody { get { return rigidBody; } }
-    public const float Gravity = 40.0f;
+    public const float Gravity = 9f;
 
     protected virtual void Start()
     {

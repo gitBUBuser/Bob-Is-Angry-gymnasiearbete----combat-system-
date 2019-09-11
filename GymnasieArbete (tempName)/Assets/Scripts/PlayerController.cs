@@ -6,6 +6,9 @@ public class PlayerController : Entity , IMoving
 {
     [SerializeField]
     LayerMask groundLayer;
+    [SerializeField]
+    Transform feetTransform;
+
     MovementState state;
 
 
@@ -15,7 +18,7 @@ public class PlayerController : Entity , IMoving
 
     float jumpTimeCounter;
     float jumpTime = 0.25f;
-    float jumpForce = 14f;
+    float jumpForce = 3f;
     float slideTime = 0.65f;
     float slideForce = 15f;
     float slideTimeCounter;
@@ -25,8 +28,10 @@ public class PlayerController : Entity , IMoving
     bool wasGrounded;
     bool grounded;
     bool isJumping;
-    bool isSliding;
-    
+
+    Animator animator;
+    CapsuleCollider2D worldCollider;
+
     public enum MovementState
     {
         Airborne,
@@ -40,30 +45,49 @@ public class PlayerController : Entity , IMoving
     protected override void Start()
     {
         base.Start();
+        worldCollider = GetComponent<CapsuleCollider2D>();
         xVel = 0;
         jumpTimeCounter = jumpTime;
         slideTimeCounter = slideTime;
-        Speed = 8;
+        Speed = 2;
+        animator = GetComponent<Animator>();
     }
 
 
     private void Update()
     {
         if (Velocity.x == 0 && grounded)
-            state = MovementState.G_Idle;
-        else if (!grounded)
-            state = MovementState.Airborne;
-        else
-            state = MovementState.G_Running;
-
-
-        if (!isSliding)
         {
-            xVel = Mathf.Lerp(xVel, Input.GetAxisRaw("Horizontal"), Time.deltaTime * 20);
-
-            Velocity = new Vector2(xVel * Speed, Velocity.y);
+            state = MovementState.G_Idle;
+        }
+        else if (!grounded)
+        {
+            state = MovementState.Airborne;
+        }
+        else
+        {
+            state = MovementState.G_Running;
+            animator.SetFloat("Xvel", Mathf.Abs(xVel));
+            
         }
         
+        if(xVel < 0)
+        {
+            transform.rotation = new Quaternion(0, 180, 0, 0);
+        }
+        if(xVel > 0)
+        {
+            transform.rotation = new Quaternion(0, 0, 0, 0);
+        }
+        
+        
+
+
+        xVel = Mathf.Lerp(xVel, Input.GetAxisRaw("Horizontal"), Time.deltaTime * 20);
+
+        Velocity = new Vector2(xVel * Speed, Velocity.y);
+
+
 
         if (Input.GetButtonDown("Jump") && grounded)
         {
@@ -94,7 +118,7 @@ public class PlayerController : Entity , IMoving
         {
             jumpTimeCounter = jumpTime;
         }
-
+ /*
         if(state == MovementState.G_Running)
         {
             
@@ -132,6 +156,7 @@ public class PlayerController : Entity , IMoving
         {
             isSliding = false;
         }
+        */
 
         
     }
@@ -144,12 +169,8 @@ public class PlayerController : Entity , IMoving
             Velocity -= new Vector2(0, Gravity * Time.deltaTime);
         }
         else if (!wasGrounded)
-        {          
-            Bounds bounds = Physics2D.OverlapArea(new Vector2(transform.position.x - (0.5f * transform.lossyScale.x), transform.position.y - (0.5f * transform.lossyScale.y)),
-            new Vector2(transform.position.x + (0.5f * transform.lossyScale.x), transform.position.y - (0.51f * transform.lossyScale.y) + (Velocity.y * Time.fixedDeltaTime)), groundLayer).bounds;
-            float yPos = bounds.center.y + bounds.extents.y + GetComponent<Collider2D>().bounds.extents.y;
+        {
             Velocity = new Vector2(Velocity.x, 0);
-            RigidBody.position = new Vector2(RigidBody.position.x, yPos);
         }
         wasGrounded = grounded;
 
@@ -158,11 +179,15 @@ public class PlayerController : Entity , IMoving
 
     bool Grounded()
     {
-        return Physics2D.OverlapArea(new Vector2(transform.position.x - (0.5f * transform.lossyScale.x), transform.position.y - (0.5f * transform.lossyScale.y)),
-            new Vector2(transform.position.x + (0.5f * transform.lossyScale.x), transform.position.y - (0.51f * transform.lossyScale.y) + (Velocity.y * Time.fixedDeltaTime)), groundLayer);
+        return Physics2D.OverlapArea(new Vector2(transform.position.x - worldCollider.bounds.extents.x, transform.position.y - worldCollider.bounds.extents.y),
+          new Vector2(transform.position.x + worldCollider.bounds.extents.x, transform.position.y - worldCollider.bounds.extents.y - 0.005f), groundLayer);
     }
 
-    
+
+    private void OnDrawGizmos()
+    {
+      
+    }
 
     private void FixedUpdate()
     {
