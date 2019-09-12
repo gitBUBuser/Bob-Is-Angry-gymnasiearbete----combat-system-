@@ -18,7 +18,7 @@ public class PlayerController : Entity , IMoving
     public MovementState State { get { return state; } set { state = value; } }
 
     float jumpTimeCounter;
-    float jumpTime = 0.25f;
+    float jumpTime = 0.15f;
     float jumpForce = 3f;
     float slideTime = 0.65f;
     float slideForce = 15f;
@@ -29,6 +29,7 @@ public class PlayerController : Entity , IMoving
     bool wasGrounded;
     bool grounded;
     bool isJumping;
+    bool wallHugging;
 
     Animator animator;
     CapsuleCollider2D worldCollider;
@@ -80,9 +81,6 @@ public class PlayerController : Entity , IMoving
         {
             transform.rotation = new Quaternion(0, 0, 0, 0);
         }
-        
-        
-
 
         xVel = Mathf.Lerp(xVel, Input.GetAxisRaw("Horizontal"), Time.deltaTime * 20);
         if(Mathf.Abs(xVel) < 0.01f)
@@ -91,37 +89,10 @@ public class PlayerController : Entity , IMoving
         }
         Velocity = new Vector2(xVel * Speed, Velocity.y);
 
-
-
-        if (Input.GetButtonDown("Jump") && grounded)
-        {
-            isJumping = true;
-            Velocity = new Vector2(Velocity.x, jumpForce);
-        }
+        
+        Jump();
 
         
-        if (Input.GetButton("Jump") && isJumping)
-        {
-            
-            if(jumpTimeCounter > 0)
-            {
-                Velocity = new Vector2(Velocity.x, jumpForce);
-                jumpTimeCounter -= Time.deltaTime;
-            }
-            else
-            {
-                isJumping = false;
-            }
-        }
-        else
-        {
-            isJumping = false;
-        }
-
-        if (grounded)
-        {
-            jumpTimeCounter = jumpTime;
-        }
  /*
         if(state == MovementState.G_Running)
         {
@@ -176,9 +147,43 @@ public class PlayerController : Entity , IMoving
         {
             Velocity = new Vector2(Velocity.x, 0);
         }
-        wasGrounded = grounded;
 
+        wasGrounded = grounded;
         RigidBody.MovePosition(RigidBody.position + Velocity * Time.fixedDeltaTime);
+    }
+
+    void Jump()
+    {
+        if (Input.GetButtonDown("Jump") && grounded)
+        {
+            isJumping = true;
+            Velocity = new Vector2(Velocity.x, jumpForce);
+
+        }
+
+        if (Input.GetButton("Jump") && isJumping)
+        {
+            if (jumpTimeCounter > 0)
+            {
+                Velocity = new Vector2(Velocity.x, jumpForce);
+                jumpTimeCounter -= Time.deltaTime;
+            }
+            else
+            {
+                isJumping = false;
+            }
+
+
+        }
+        else
+        {
+            isJumping = false;
+        }
+
+        if (grounded)
+        {
+            jumpTimeCounter = jumpTime;
+        }
     }
 
     bool Grounded()
@@ -187,10 +192,28 @@ public class PlayerController : Entity , IMoving
           new Vector2(transform.position.x + worldCollider.bounds.extents.x, transform.position.y - worldCollider.bounds.extents.y - 0.005f), groundLayer);
     }
 
-
-    private void OnDrawGizmos()
+    bool Patted()
     {
-      
+        return Physics2D.OverlapArea(new Vector2(transform.position.x - worldCollider.bounds.extents.x, transform.position.y + worldCollider.bounds.extents.y),
+          new Vector2(transform.position.x + worldCollider.bounds.extents.x, transform.position.y + worldCollider.bounds.extents.y + 0.005f), groundLayer);
+    }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (!grounded)
+        {
+            isJumping = false;
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (Patted())
+        {
+            Velocity = new Vector2(Velocity.x, 0);
+            isJumping = false;
+
+        }
     }
 
     private void FixedUpdate()
