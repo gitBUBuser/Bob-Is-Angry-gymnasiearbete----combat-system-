@@ -4,48 +4,58 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
+    BoxCollider2D cameraBox;
     Transform playerT;
-    Vector2 currentPosition;
-    Vector3 velocity;
-    Vector3 wantedOffset = new Vector3(0, 0, -10);
-    float smoothTime = 20f;
-    Camera camera;
-    float currentX;
-    float currentY;
-    int width;
-    int height;
-    bool resetXPos;
-    bool resetYpos;
 
     private void Start()
     {
-        camera = GetComponent<Camera>();
-        width = camera.pixelWidth;
-        height = camera.pixelHeight;
+        cameraBox = GetComponent<BoxCollider2D>();
         playerT = GameObject.FindGameObjectWithTag("Player").transform;
     }
 
     private void Update()
     {
-        if(camera.WorldToScreenPoint(playerT.position).x > width * 0.75f || camera.WorldToScreenPoint(playerT.position).x < width * 0.25f)
+        AspectRatioBoxChange();
+        FollowPlayer();
+    }
+
+    void AspectRatioBoxChange()
+    {
+        if (Camera.main.aspect >= (1.25f) && Camera.main.aspect < (1.3f))
         {
-            currentX = playerT.position.x;
+            cameraBox.size = new Vector2(18f, 14.3f);
         }
 
-        if (camera.WorldToScreenPoint(playerT.position).y > height * 0.75f || camera.WorldToScreenPoint(playerT.position).y < height * 0.25f)
+        if (Camera.main.aspect >= (1.3f) && Camera.main.aspect < (1.4f))
         {
-            currentY = playerT.position.y;
+            cameraBox.size = new Vector2(19.13f, 14.3f);
         }
 
-        if(playerT.GetComponent<PlayerController>().State == PlayerController.MovementState.G_Running || playerT.GetComponent<PlayerController>().State == PlayerController.MovementState.Airborne)
+        if (Camera.main.aspect >= (1.5f) && Camera.main.aspect < (1.6f))
         {
-            transform.position = Vector3.SmoothDamp(transform.position, new Vector2(currentX,currentY),ref velocity, smoothTime * Time.deltaTime) + wantedOffset;
+            cameraBox.size = new Vector2(21.6f, 14.3f);
         }
-        else
+
+        if (Camera.main.aspect >= (1.6f) && Camera.main.aspect < (1.7f))
         {
-            transform.position = Vector3.SmoothDamp(transform.position, playerT.position, ref velocity, smoothTime * Time.deltaTime) + wantedOffset;
+            cameraBox.size = new Vector2(23f, 14.3f);
         }
-       
-        
+
+        if (Camera.main.aspect >= (1.7f) && Camera.main.aspect < (1.8f))
+        {
+            cameraBox.size = new Vector2(25.4f, 14.3f);
+        }
+    }
+
+    void FollowPlayer()
+    {
+        if (GameObject.Find("Boundary"))
+        {
+            BoxCollider2D boundary = GameObject.Find("Boundary").GetComponent<BoxCollider2D>();
+            transform.position = new Vector3(Mathf.Clamp(playerT.position.x, boundary.bounds.min.x + cameraBox.size.x / 2, boundary.bounds.max.x - cameraBox.size.x / 2),
+                Mathf.Clamp(playerT.position.y, boundary.bounds.min.y + cameraBox.size.y / 2, boundary.bounds.max.y - cameraBox.size.y / 2),
+                transform.position.z);
+                
+        }
     }
 }

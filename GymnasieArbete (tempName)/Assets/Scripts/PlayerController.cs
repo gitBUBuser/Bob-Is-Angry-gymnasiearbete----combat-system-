@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : Entity , IMoving
+public class PlayerController : Entity , IMoving , IHealth
 {
     [SerializeField]
     LayerMask groundLayer;
@@ -14,15 +14,18 @@ public class PlayerController : Entity , IMoving
 
 
     public float Speed { get; set; }
+    public int Health { get; set; }
     public Vector2 Velocity { get; set; }
     public MovementState State { get { return state; } set { state = value; } }
 
     float jumpTimeCounter;
-    float jumpTime = 0.15f;
+    float jumpTime = 0.2f;
     float jumpForce = 3f;
     float slideTime = 0.65f;
-    float slideForce = 15f;
+    float slideForce = 2.5f;
     float slideTimeCounter;
+    float orgSpeed;
+    float RA_speedMultiplier = 0.5f;
 
     float xVel;
 
@@ -39,10 +42,9 @@ public class PlayerController : Entity , IMoving
         Airborne,
         G_Idle,
         G_Running,
-        G_Sliding
+        G_Sliding,
+        Attacking
     }
-
-
 
     protected override void Start()
     {
@@ -52,11 +54,152 @@ public class PlayerController : Entity , IMoving
         jumpTimeCounter = jumpTime;
         slideTimeCounter = slideTime;
         Speed = 2;
+        Health = 1000;
+        orgSpeed = Speed;
         animator = GetComponent<Animator>();
     }
 
+    public void TakeDamage(int amount)
+    {
+        Health -= amount;
+    }
 
     private void Update()
+    {
+        if(state != MovementState.Attacking && state != MovementState.G_Sliding)
+        {
+            SetState();
+
+            if (Input.GetButtonDown("LightAttack"))
+            {
+                switch (state)
+                {
+                    case MovementState.G_Running:
+                        state = MovementState.Attacking;
+                        animator.SetBool("LightAttack", true);
+                        Speed *= RA_speedMultiplier;
+                        break;
+
+                    case MovementState.Airborne:
+                        animator.SetBool("LightAttack", true);
+                        break;
+                }
+                
+            }
+        }
+
+        if (Input.GetButtonDown("Crouch") && state == MovementState.G_Running)
+        {
+            xVel = Mathf.Lerp(xVel, Input.GetAxisRaw("Horizontal"), Time.deltaTime * 20);
+            animator.SetBool("Slide", true);
+            state = MovementState.G_Sliding;
+        }
+
+        if(state == MovementState.G_Sliding)
+        {
+            if (Input.GetButton("Crouch") && slideTimeCounter > 0)
+            {
+                slideTimeCounter -= Time.deltaTime;
+                Speed = slideForce;
+
+            }
+            else if(!Patted())
+            {
+                ResetSlide();
+            }
+        }
+        else
+        {           
+            xVel = Mathf.Lerp(xVel, Input.GetAxisRaw("Horizontal"), Time.deltaTime * 20);
+        }
+
+        animator.SetFloat("Xvel", Mathf.Abs(xVel));
+
+
+        if (xVel < 0)
+        {
+            transform.rotation = new Quaternion(0, 180, 0, 0);
+        }
+        if(xVel > 0)
+        {
+            transform.rotation = new Quaternion(0, 0, 0, 0);
+        }
+        
+        
+        if(Mathf.Abs(xVel) < 0.01f)
+        {
+            xVel = 0;
+        }
+
+        
+        Velocity = new Vector2(xVel * Speed, RigidBody.velocity.y);
+        Jump();
+    }
+
+    public void Move()
+    {
+        grounded = Grounded();
+        animator.SetBool("Grounded", grounded);
+        RigidBody.velocity = new Vector2(Velocity.x, RigidBody.velocity.y);
+    }
+
+    void Jump()
+    {
+        if (Input.GetButtonDown("Jump") && grounded)
+        {
+            if (!Patted())
+            {
+                isJumping = true;
+                jumpTimeCounter = jumpTime;
+                RigidBody.velocity = new Vector2(RigidBody.velocity.x, jumpForce);
+
+                if (state == MovementState.G_Sliding)
+                {
+                    ResetSlide();
+                }
+            }
+            
+        }
+
+        if (Input.GetButton("Jump") && isJumping)
+        {
+            if (jumpTimeCounter > 0)
+            {
+                RigidBody.velocity = new Vector2(RigidBody.velocity.x, jumpForce);
+                jumpTimeCounter -= Time.deltaTime;
+            }
+            else
+            {                
+                isJumping = false;
+            }
+        }
+        else
+        {
+            isJumping = false;
+        }
+    }
+
+    bool Grounded()
+    {
+        return Physics2D.OverlapArea(new Vector2(transform.position.x + worldCollider.offset.x - worldCollider.bounds.extents.x, transform.position.y + worldCollider.offset.y - worldCollider.bounds.extents.y),
+          new Vector2(transform.position.x + worldCollider.bounds.extents.x + worldCollider.offset.x, transform.position.y - worldCollider.bounds.extents.y + worldCollider.offset.y - 0.001f), groundLayer);
+    }
+
+    bool Patted()
+    {
+        return Physics2D.OverlapArea(new Vector2(transform.position.x + worldCollider.offset.x - worldCollider.bounds.extents.x, transform.position.y + worldCollider.offset.y + worldCollider.bounds.extents.y),
+          new Vector2(transform.position.x + worldCollider.bounds.extents.x + worldCollider.offset.x, transform.position.y + worldCollider.bounds.extents.y + worldCollider.offset.y + 0.2f), groundLayer);
+    }
+
+    void ResetSlide()
+    {
+        Speed = orgSpeed;
+        slideTimeCounter = slideTime;
+        animator.SetBool("Slide", false);
+        SetState();
+    }
+    
+    void SetState()
     {
         if (Velocity.x == 0 && grounded)
         {
@@ -69,155 +212,29 @@ public class PlayerController : Entity , IMoving
         else
         {
             state = MovementState.G_Running;
-            animator.SetFloat("Xvel", Mathf.Abs(xVel));
-            
-        }
-        
-        if(xVel < 0)
-        {
-            transform.rotation = new Quaternion(0, 180, 0, 0);
-        }
-        if(xVel > 0)
-        {
-            transform.rotation = new Quaternion(0, 0, 0, 0);
-        }
-
-        xVel = Mathf.Lerp(xVel, Input.GetAxisRaw("Horizontal"), Time.deltaTime * 20);
-        if(Mathf.Abs(xVel) < 0.01f)
-        {
-            xVel = 0;
-        }
-        Velocity = new Vector2(xVel * Speed, Velocity.y);
-
-        
-        Jump();
-
-        
- /*
-        if(state == MovementState.G_Running)
-        {
-            
-            if (Input.GetButtonDown("Crouch") && !isSliding)
-            {
-                xVel = (int)Input.GetAxisRaw("Horizontal");
-                slideTimeCounter = slideTime;
-                isSliding = true;
-                transform.localScale = new Vector3(1, 0.5f);
-            }
-
-            if (Input.GetButton("Crouch") && isSliding)
-            {
-                if(slideTimeCounter > 0)
-                {
-                    slideTimeCounter -= Time.deltaTime;
-                    Velocity = new Vector2(xVel * slideForce, Velocity.y);
-                }
-                else
-                {
-                    transform.localScale = new Vector3(1, 1f);
-                    isSliding = false;
-                    slideTimeCounter = 0;
-                }
-                  
-                
-            }
-            else
-            {
-                transform.localScale = new Vector3(1, 1f);
-                isSliding = false;
-            }           
-        }
-        else
-        {
-            isSliding = false;
-        }
-        */
-
-        
-    }
-
-    public void Move()
-    {
-        grounded = Grounded();
-        if (!grounded)
-        {
-            Velocity -= new Vector2(0, Gravity * Time.deltaTime);
-        }
-        else if (!wasGrounded)
-        {
-            Velocity = new Vector2(Velocity.x, 0);
-        }
-
-        wasGrounded = grounded;
-        RigidBody.MovePosition(RigidBody.position + Velocity * Time.fixedDeltaTime);
-    }
-
-    void Jump()
-    {
-        if (Input.GetButtonDown("Jump") && grounded)
-        {
-            isJumping = true;
-            Velocity = new Vector2(Velocity.x, jumpForce);
-
-        }
-
-        if (Input.GetButton("Jump") && isJumping)
-        {
-            if (jumpTimeCounter > 0)
-            {
-                Velocity = new Vector2(Velocity.x, jumpForce);
-                jumpTimeCounter -= Time.deltaTime;
-            }
-            else
-            {
-                isJumping = false;
-            }
-
-
-        }
-        else
-        {
-            isJumping = false;
-        }
-
-        if (grounded)
-        {
-            jumpTimeCounter = jumpTime;
-        }
-    }
-
-    bool Grounded()
-    {
-        return Physics2D.OverlapArea(new Vector2(transform.position.x - worldCollider.bounds.extents.x, transform.position.y - worldCollider.bounds.extents.y),
-          new Vector2(transform.position.x + worldCollider.bounds.extents.x, transform.position.y - worldCollider.bounds.extents.y - 0.005f), groundLayer);
-    }
-
-    bool Patted()
-    {
-        return Physics2D.OverlapArea(new Vector2(transform.position.x - worldCollider.bounds.extents.x, transform.position.y + worldCollider.bounds.extents.y),
-          new Vector2(transform.position.x + worldCollider.bounds.extents.x, transform.position.y + worldCollider.bounds.extents.y + 0.005f), groundLayer);
-    }
-
-    private void OnCollisionStay2D(Collision2D collision)
-    {
-        if (!grounded)
-        {
-            isJumping = false;
-        }
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (Patted())
-        {
-            Velocity = new Vector2(Velocity.x, 0);
-            isJumping = false;
-
         }
     }
 
     private void FixedUpdate()
     {
         Move();
+    }
+
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(collision.transform.tag == "Chunk")
+        {
+            collision.transform.GetComponent<Rigidbody2D>().AddForce(new Vector2(Velocity.x * 0.00003f, 0.00003f), ForceMode2D.Impulse);
+        }
+    }
+    ///ANIMATION CONTROLS
+    ///
+
+    public void LightAttackIsDone()
+    {
+        animator.SetBool("LightAttack", false);
+        Speed = orgSpeed;
+        SetState();
     }
 }
