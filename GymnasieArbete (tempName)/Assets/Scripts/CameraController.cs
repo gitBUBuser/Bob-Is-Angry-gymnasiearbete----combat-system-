@@ -4,11 +4,13 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
+    Camera cam;
     BoxCollider2D cameraBox;
     Transform playerT;
 
     private void Start()
     {
+        cam = GetComponent<Camera>();
         cameraBox = GetComponent<BoxCollider2D>();
         playerT = GameObject.FindGameObjectWithTag("Player").transform;
     }
@@ -21,33 +23,18 @@ public class CameraController : MonoBehaviour
 
     void AspectRatioBoxChange()
     {
-        if (Camera.main.aspect >= (1.25f) && Camera.main.aspect < (1.3f))
-        {
-            cameraBox.size = new Vector2(18f, 14.3f);
-        }
+        float xRatio = (float)Screen.width / (float)Screen.height;
 
-        if (Camera.main.aspect >= (1.3f) && Camera.main.aspect < (1.4f))
-        {
-            cameraBox.size = new Vector2(19.13f, 14.3f);
-        }
+        float yRatio = (float)Screen.height / (float)Screen.width;
 
-        if (Camera.main.aspect >= (1.5f) && Camera.main.aspect < (1.6f))
-        {
-            cameraBox.size = new Vector2(21.6f, 14.3f);
-        }
+        float boxSizeX = (Mathf.Abs(cam.orthographicSize) * 2 * xRatio);
 
-        if (Camera.main.aspect >= (1.6f) && Camera.main.aspect < (1.7f))
-        {
-            cameraBox.size = new Vector2(23f, 14.3f);
-        }
+        float boxSizeY = boxSizeX * yRatio;
 
-        if (Camera.main.aspect >= (1.7f) && Camera.main.aspect < (1.8f))
-        {
-            cameraBox.size = new Vector2(25.4f, 14.3f);
-        }
+        cameraBox.size = new Vector2(boxSizeX, boxSizeY);
     }
 
-    void FollowPlayer()
+void FollowPlayer()
     {
         if (GameObject.Find("Boundary"))
         {

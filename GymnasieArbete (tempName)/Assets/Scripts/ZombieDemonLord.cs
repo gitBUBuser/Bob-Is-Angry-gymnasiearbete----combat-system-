@@ -52,7 +52,7 @@ public class ZombieDemonLord : Entity, IMoving, IHealth
     protected override void Start()
     {
         base.Start();
-        Health = 10;
+        Health = 1000;
     }
 
     // Update is called once per frame

@@ -16,6 +16,7 @@ public class PlayerController : Entity , IMoving , IHealth
     public float Speed { get; set; }
     public int Health { get; set; }
     public Vector2 Velocity { get; set; }
+    public Vector2 OutsideForces { get; set; }
     public MovementState State { get { return state; } set { state = value; } }
 
     float jumpTimeCounter;
@@ -75,16 +76,20 @@ public class PlayerController : Entity , IMoving , IHealth
                 switch (state)
                 {
                     case MovementState.G_Running:
+                        TellAnimatorAttackDirection();
                         state = MovementState.Attacking;
                         animator.SetBool("LightAttack", true);
-                        Speed *= RA_speedMultiplier;
+                     
                         break;
 
                     case MovementState.Airborne:
+                        TellAnimatorAttackDirection();
+                        state = MovementState.Attacking;
                         animator.SetBool("LightAttack", true);
                         break;
                 }
-                
+                Speed *= RA_speedMultiplier;
+
             }
         }
 
@@ -115,14 +120,16 @@ public class PlayerController : Entity , IMoving , IHealth
 
         animator.SetFloat("Xvel", Mathf.Abs(xVel));
 
-
-        if (xVel < 0)
+        if(state != MovementState.Attacking)
         {
-            transform.rotation = new Quaternion(0, 180, 0, 0);
-        }
-        if(xVel > 0)
-        {
-            transform.rotation = new Quaternion(0, 0, 0, 0);
+            if (xVel < 0)
+            {
+                transform.rotation = new Quaternion(0, 180, 0, 0);
+            }
+            if (xVel > 0)
+            {
+                transform.rotation = new Quaternion(0, 0, 0, 0);
+            }
         }
         
         
@@ -140,7 +147,8 @@ public class PlayerController : Entity , IMoving , IHealth
     {
         grounded = Grounded();
         animator.SetBool("Grounded", grounded);
-        RigidBody.velocity = new Vector2(Velocity.x, RigidBody.velocity.y);
+        RigidBody.velocity = new Vector2(Velocity.x, RigidBody.velocity.y) + OutsideForces;
+        OutsideForces = Vector2.zero;
     }
 
     void Jump()
@@ -212,6 +220,29 @@ public class PlayerController : Entity , IMoving , IHealth
         else
         {
             state = MovementState.G_Running;
+        }
+    }
+
+    void TellAnimatorAttackDirection()
+    {
+        if (Input.GetButton("Vertical"))
+        {
+            if(Input.GetAxisRaw("Vertical") < 0)
+            {
+                animator.SetInteger("Direction", 2);
+            }
+            else
+            {
+                animator.SetInteger("Direction", 3);
+            }
+        }
+        else if (Input.GetButton("Horizontal"))
+        {
+            animator.SetInteger("Direction", 1);
+        }
+        else
+        {
+            animator.SetInteger("Direction", 3);
         }
     }
 
