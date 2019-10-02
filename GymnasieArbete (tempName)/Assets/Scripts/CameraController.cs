@@ -8,6 +8,7 @@ public class CameraController : MonoBehaviour
     BoxCollider2D cameraBox;
     Transform playerT;
 
+   
     private void Start()
     {
         cam = GetComponent<Camera>();

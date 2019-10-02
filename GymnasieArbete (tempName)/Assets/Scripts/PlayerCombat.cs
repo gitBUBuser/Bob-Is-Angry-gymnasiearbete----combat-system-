@@ -4,43 +4,109 @@ using UnityEngine;
 
 public class PlayerCombat : MonoBehaviour
 {
-    [SerializeField]
-    int RA_dmg,
-        Basic_dmg,
-        Heavy_dmg;
+   
 
-    List<Collider2D> collisions;
+    [Header("Attack Damage")]
+    [SerializeField] int dmgSideAir;
+    [SerializeField] int dmgDownAir;
+    [SerializeField] int dmgNeutralAir;
+    [SerializeField] int dmgSide;
 
+    [Header("Attack Radius")]
+    [SerializeField] float radiusSideAir;
+    [SerializeField] float radiusDownAir;
+    [SerializeField] float radiusNeutralAir;
+    [SerializeField] float radiusSide;
 
-    void Start()
+    [Header("Attack Position")]
+    [SerializeField] Transform pointSideAir;
+    [SerializeField] Transform pointDownAir;
+    [SerializeField] Transform pointNeutralAir;
+    [SerializeField] Transform pointSide;
+
+    [Header("Other Variables")]
+    [SerializeField] float downAirPushback;
+
+    bool dealtDamage;
+    PlayerController controller;
+
+    private void Start()
     {
-        collisions = new List<Collider2D>();
+        controller = GetComponent<PlayerController>();
     }
 
-    private void OnDisable()
+    public void SideAir()
     {
-        ResetWeapon();
-    }
+        Collider2D[] results = CollidersWithinCircle(pointSideAir, radiusSideAir);
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {  
-        if (!collisions.Contains(collision))
+        for (int i = 0; i < results.Length; i++)
         {
-            if (collision.transform.tag == "Chunk")
-            {
-                Vector2 distance = collision.transform.position - transform.position;
-                collision.GetComponent<Rigidbody2D>().AddForce(distance.normalized * 0.0001f, ForceMode2D.Impulse);
-            }
-            if (collision.GetComponent(typeof(IHealth)))
-            {
-                collision.GetComponent<IHealth>().TakeDamage(RA_dmg);
-            }
-            collisions.Add(collision);
-        }      
+            DealKnockbackIfTarget(new Vector2(10, 4), results[i]);
+            DealDamageIfTarget(dmgSideAir, results[i]);
+        }
+        ResetVariables();
     }
 
-    public void ResetWeapon()
+    public void DownAir()
     {
-        collisions.Clear();
+        Collider2D[] results = CollidersWithinCircle(pointDownAir, radiusDownAir);
+
+        for (int i = 0; i < results.Length; i++)
+        {
+            DealDamageIfTarget(dmgDownAir, results[i]);
+        }
+        if (dealtDamage)
+            controller.Jump(downAirPushback);
+        ResetVariables();
+    }
+
+    public void NeutralAir()
+    {
+        Collider2D[] results = CollidersWithinCircle(pointSideAir, radiusSideAir);
+
+        for (int i = 0; i < results.Length; i++)
+        {
+            DealDamageIfTarget(dmgNeutralAir, results[i]);
+        }
+        ResetVariables();
+    }
+
+    void DealDamageIfTarget(int damage, Collider2D collider)
+    {
+        if (collider.GetComponent<Entity>() && collider.gameObject != gameObject)
+        {
+            collider.GetComponent<IHealth>().TakeDamage(damage);
+            Debug.Log("Dealt damage 2: " + collider.gameObject.name);
+            dealtDamage = true;
+        }
+    }
+
+    void DealKnockbackIfTarget(Vector2 knockback, Collider2D collider)
+    {
+        if (collider.GetComponent<Entity>() && collider.gameObject != gameObject)
+        {
+            Debug.Log("Dealt knockback 2: " + collider.gameObject.name);
+            collider.GetComponent<Entity>().AddForce(new Vector2(knockback.x * transform.right.x, knockback.y));
+        }
+    }
+
+    void ResetVariables()
+    {
+        dealtDamage = false;
+    }
+
+    Collider2D[] CollidersWithinCircle(Transform position, float radius)
+    {
+        return Physics2D.OverlapCircleAll(position.position, radius);
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(pointSideAir.position, radiusSideAir);
+        Gizmos.DrawWireSphere(pointNeutralAir.position, radiusNeutralAir);
+        Gizmos.DrawWireSphere(pointDownAir.position, radiusDownAir);
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(pointSide.position, radiusSide);
     }
 }

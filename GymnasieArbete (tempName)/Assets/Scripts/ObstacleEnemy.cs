@@ -31,7 +31,7 @@ public class ObstacleEnemy : Entity, IMoving, IHealth
 
     public void Move()
     {
-        RigidBody.velocity = transform.right * Speed; 
+        RB.velocity = transform.right * Speed; 
     }
 
     protected override void Start()
@@ -142,8 +142,6 @@ public class ObstacleEnemy : Entity, IMoving, IHealth
         if (collision.tag == "Player")
         {
             collision.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 2) + (Vector2)transform.right * speed;
-            
-            Debug.Log("CaughtPlayer");
         }
     }
 

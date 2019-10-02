@@ -23,7 +23,7 @@ public class ZombieDemonLord : Entity, IMoving, IHealth
 
     public void Move()
     {
-        RigidBody.velocity = Velocity;
+        RB.velocity = Velocity;
     }
 
     public void TakeDamage(int amount)
@@ -31,7 +31,7 @@ public class ZombieDemonLord : Entity, IMoving, IHealth
         Debug.Log(gameObject + "|" + amount);
 
         Health -= amount;
-        RigidBody.velocity = new Vector2(RigidBody.velocity.x, shockForce);
+        RB.velocity = new Vector2(RB.velocity.x, shockForce);
         if(Health < 0)
         {
             Die();

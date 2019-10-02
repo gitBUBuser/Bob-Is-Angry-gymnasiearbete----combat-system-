@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : Entity , IMoving , IHealth
+public class PlayerController : Entity, IHealth
 {
-    [SerializeField]
-    LayerMask groundLayer;
     [SerializeField]
     Transform feetTransform;
 
@@ -15,28 +13,26 @@ public class PlayerController : Entity , IMoving , IHealth
 
     public float Speed { get; set; }
     public int Health { get; set; }
-    public Vector2 Velocity { get; set; }
-    public Vector2 OutsideForces { get; set; }
     public MovementState State { get { return state; } set { state = value; } }
-
+    bool previouslyPatted;
     float jumpTimeCounter;
-    float jumpTime = 0.2f;
-    float jumpForce = 3f;
+    float jumpTime = 0.25f;
+    float jumpForce = 10;
     float slideTime = 0.65f;
-    float slideForce = 2.5f;
+    float slideForce = 12f;
     float slideTimeCounter;
     float orgSpeed;
     float RA_speedMultiplier = 0.5f;
-
+    float groundTime = 0;
     float xVel;
 
     bool wasGrounded;
-    bool grounded;
+    public bool grounded;
     bool isJumping;
     bool wallHugging;
 
     Animator animator;
-    CapsuleCollider2D worldCollider;
+    Vector2 inputForce;
 
     public enum MovementState
     {
@@ -49,12 +45,11 @@ public class PlayerController : Entity , IMoving , IHealth
 
     protected override void Start()
     {
-        base.Start();
-        worldCollider = GetComponent<CapsuleCollider2D>();
+        base.Start();       
         xVel = 0;
         jumpTimeCounter = jumpTime;
         slideTimeCounter = slideTime;
-        Speed = 2;
+        Speed = 5;
         Health = 1000;
         orgSpeed = Speed;
         animator = GetComponent<Animator>();
@@ -65,9 +60,9 @@ public class PlayerController : Entity , IMoving , IHealth
         Health -= amount;
     }
 
-    private void Update()
+    void Update()
     {
-        if(state != MovementState.Attacking && state != MovementState.G_Sliding)
+        if (state != MovementState.Attacking && state != MovementState.G_Sliding)
         {
             SetState();
 
@@ -79,7 +74,7 @@ public class PlayerController : Entity , IMoving , IHealth
                         TellAnimatorAttackDirection();
                         state = MovementState.Attacking;
                         animator.SetBool("LightAttack", true);
-                     
+
                         break;
 
                     case MovementState.Airborne:
@@ -89,38 +84,38 @@ public class PlayerController : Entity , IMoving , IHealth
                         break;
                 }
                 Speed *= RA_speedMultiplier;
-
             }
         }
 
         if (Input.GetButtonDown("Crouch") && state == MovementState.G_Running)
         {
-            xVel = Mathf.Lerp(xVel, Input.GetAxisRaw("Horizontal"), Time.deltaTime * 20);
+            xVel = Input.GetAxisRaw("Horizontal");
             animator.SetBool("Slide", true);
             state = MovementState.G_Sliding;
         }
 
-        if(state == MovementState.G_Sliding)
+        if (state == MovementState.G_Sliding)
         {
             if (Input.GetButton("Crouch") && slideTimeCounter > 0)
             {
                 slideTimeCounter -= Time.deltaTime;
                 Speed = slideForce;
+                MaxSpeed = slideForce;
 
             }
-            else if(!Patted())
+            else if (!Patted())
             {
                 ResetSlide();
             }
         }
         else
-        {           
-            xVel = Mathf.Lerp(xVel, Input.GetAxisRaw("Horizontal"), Time.deltaTime * 20);
+        {
+            xVel = Input.GetAxisRaw("Horizontal");
         }
 
         animator.SetFloat("Xvel", Mathf.Abs(xVel));
 
-        if(state != MovementState.Attacking)
+        if (state != MovementState.Attacking)
         {
             if (xVel < 0)
             {
@@ -131,53 +126,41 @@ public class PlayerController : Entity , IMoving , IHealth
                 transform.rotation = new Quaternion(0, 0, 0, 0);
             }
         }
-        
-        
-        if(Mathf.Abs(xVel) < 0.01f)
-        {
-            xVel = 0;
-        }
-
-        
-        Velocity = new Vector2(xVel * Speed, RigidBody.velocity.y);
+       
         Jump();
-    }
-
-    public void Move()
-    {
-        grounded = Grounded();
-        animator.SetBool("Grounded", grounded);
-        RigidBody.velocity = new Vector2(Velocity.x, RigidBody.velocity.y) + OutsideForces;
-        OutsideForces = Vector2.zero;
+        InputForce(new Vector2(xVel * Speed, 0));
     }
 
     void Jump()
     {
-        if (Input.GetButtonDown("Jump") && grounded)
+        if (Input.GetButtonDown("Jump") && OnGround)
         {
+            animator.SetBool("Jump", true);
+
             if (!Patted())
             {
                 isJumping = true;
                 jumpTimeCounter = jumpTime;
-                RigidBody.velocity = new Vector2(RigidBody.velocity.x, jumpForce);
+                Jump(jumpForce);
 
                 if (state == MovementState.G_Sliding)
                 {
                     ResetSlide();
                 }
             }
-            
         }
 
         if (Input.GetButton("Jump") && isJumping)
         {
             if (jumpTimeCounter > 0)
             {
-                RigidBody.velocity = new Vector2(RigidBody.velocity.x, jumpForce);
+
+                inputForce.Set(inputForce.x, jumpForce);
+                Jump(jumpForce);
                 jumpTimeCounter -= Time.deltaTime;
             }
             else
-            {                
+            {
                 isJumping = false;
             }
         }
@@ -187,54 +170,44 @@ public class PlayerController : Entity , IMoving , IHealth
         }
     }
 
-    bool Grounded()
-    {
-        return Physics2D.OverlapArea(new Vector2(transform.position.x + worldCollider.offset.x - worldCollider.bounds.extents.x, transform.position.y + worldCollider.offset.y - worldCollider.bounds.extents.y),
-          new Vector2(transform.position.x + worldCollider.bounds.extents.x + worldCollider.offset.x, transform.position.y - worldCollider.bounds.extents.y + worldCollider.offset.y - 0.001f), groundLayer);
-    }
-
-    bool Patted()
-    {
-        return Physics2D.OverlapArea(new Vector2(transform.position.x + worldCollider.offset.x - worldCollider.bounds.extents.x, transform.position.y + worldCollider.offset.y + worldCollider.bounds.extents.y),
-          new Vector2(transform.position.x + worldCollider.bounds.extents.x + worldCollider.offset.x, transform.position.y + worldCollider.bounds.extents.y + worldCollider.offset.y + 0.2f), groundLayer);
-    }
-
     void ResetSlide()
     {
+        MaxSpeed = 8;
         Speed = orgSpeed;
         slideTimeCounter = slideTime;
         animator.SetBool("Slide", false);
         SetState();
     }
-    
+
     void SetState()
     {
-        if (Velocity.x == 0 && grounded)
-        {
+        if (AccessVelocity.x == 0 && OnGround)
             state = MovementState.G_Idle;
-        }
-        else if (!grounded)
-        {
+        else if (!OnGround)
             state = MovementState.Airborne;
-        }
         else
-        {
             state = MovementState.G_Running;
+    }
+
+    protected override void OnPattedEnter()
+    {
+        if (AccessVelocity.y > 0)
+        {
+            AccessVelocity.Set(AccessVelocity.x, 0);
+            isJumping = false;
         }
     }
 
+
     void TellAnimatorAttackDirection()
     {
+   
         if (Input.GetButton("Vertical"))
         {
             if(Input.GetAxisRaw("Vertical") < 0)
             {
                 animator.SetInteger("Direction", 2);
-            }
-            else
-            {
-                animator.SetInteger("Direction", 3);
-            }
+            }         
         }
         else if (Input.GetButton("Horizontal"))
         {
@@ -244,28 +217,31 @@ public class PlayerController : Entity , IMoving , IHealth
         {
             animator.SetInteger("Direction", 3);
         }
+        
     }
 
-    private void FixedUpdate()
+    protected override void FixedUpdate()
     {
-        Move();
+        base.FixedUpdate();
+        animator.SetBool("Grounded", OnGround);
     }
+   
 
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if(collision.transform.tag == "Chunk")
-        {
-            collision.transform.GetComponent<Rigidbody2D>().AddForce(new Vector2(Velocity.x * 0.00003f, 0.00003f), ForceMode2D.Impulse);
-        }
-    }
     ///ANIMATION CONTROLS
     ///
+
+
+   
 
     public void LightAttackIsDone()
     {
         animator.SetBool("LightAttack", false);
         Speed = orgSpeed;
         SetState();
+    }
+
+    public void JumpIsOver()
+    {
+        animator.SetBool("Jump", false);
     }
 }
