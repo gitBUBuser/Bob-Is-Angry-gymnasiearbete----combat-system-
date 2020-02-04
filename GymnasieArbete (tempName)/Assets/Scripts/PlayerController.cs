@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
+
 
 public class PlayerController : Entity, IHealth
 {
@@ -8,31 +10,33 @@ public class PlayerController : Entity, IHealth
     Transform feetTransform;
 
     [SerializeField]
+    Transform cameraParent;
+
+    [SerializeField]
     MovementState state;
 
+    [SerializeField]
+    float stunTime;
 
+    PlayerCombat combatController;
+    PlayerFX fx;
     public float Speed { get; set; }
     public int Health { get; set; }
     public MovementState State { get { return state; } set { state = value; } }
-    bool previouslyPatted;
     float jumpTimeCounter;
-    float jumpTime = 0.25f;
-    float jumpForce = 10;
+    float jumpTime = 0.2f;
+    float jumpForce = 6f;
     float slideTime = 0.65f;
     float slideForce = 12f;
     float slideTimeCounter;
     float orgSpeed;
     float RA_speedMultiplier = 0.5f;
-    float groundTime = 0;
     float xVel;
 
-    bool wasGrounded;
-    public bool grounded;
     bool isJumping;
-    bool wallHugging;
-
+    bool secondJump;
     Animator animator;
-    Vector2 inputForce;
+    ShakeTransform cameraShake;
 
     public enum MovementState
     {
@@ -42,120 +46,196 @@ public class PlayerController : Entity, IHealth
         G_Sliding,
         Attacking
     }
+    private void Awake()
+    {
+    }
+
+    private void OnEnable()
+    {
+    }
+
+    private void OnDisable()
+    {
+    }
 
     protected override void Start()
     {
         base.Start();       
-        xVel = 0;
         jumpTimeCounter = jumpTime;
         slideTimeCounter = slideTime;
-        Speed = 5;
+        Speed = 100;
         Health = 1000;
         orgSpeed = Speed;
         animator = GetComponent<Animator>();
+        combatController = GetComponent<PlayerCombat>();
+        fx = GetComponent<PlayerFX>();
+    }
+
+    public void CamShake(ShakeTransformEventData data)
+    {
+        fx.CamShake(data);
+    }
+
+    public void Knockback(Vector2 force)
+    {
+        if (!Stunned)
+        {
+            Stunned = true;
+            MaxedSpeed();
+            RB.velocity = force;
+            StartCoroutine(StartStun());
+        }
+
     }
 
     public void TakeDamage(int amount)
     {
-        Health -= amount;
+        if (!Stunned)
+            Health -= amount;
     }
 
     void Update()
     {
-        if (state != MovementState.Attacking && state != MovementState.G_Sliding)
+        if (Stunned)
+            return;
+
+        if(state != MovementState.G_Sliding && state != MovementState.Attacking)
         {
             SetState();
-
-            if (Input.GetButtonDown("LightAttack"))
-            {
-                switch (state)
-                {
-                    case MovementState.G_Running:
-                        TellAnimatorAttackDirection();
-                        state = MovementState.Attacking;
-                        animator.SetBool("LightAttack", true);
-
-                        break;
-
-                    case MovementState.Airborne:
-                        TellAnimatorAttackDirection();
-                        state = MovementState.Attacking;
-                        animator.SetBool("LightAttack", true);
-                        break;
-                }
-                Speed *= RA_speedMultiplier;
-            }
         }
-
-        if (Input.GetButtonDown("Crouch") && state == MovementState.G_Running)
-        {
-            xVel = Input.GetAxisRaw("Horizontal");
-            animator.SetBool("Slide", true);
-            state = MovementState.G_Sliding;
-        }
-
-        if (state == MovementState.G_Sliding)
-        {
-            if (Input.GetButton("Crouch") && slideTimeCounter > 0)
-            {
-                slideTimeCounter -= Time.deltaTime;
-                Speed = slideForce;
-                MaxSpeed = slideForce;
-
-            }
-            else if (!Patted())
-            {
-                ResetSlide();
-            }
-        }
-        else
-        {
-            xVel = Input.GetAxisRaw("Horizontal");
-        }
-
+        SetXvel(Input.GetAxisRaw("Horizontal"));
         animator.SetFloat("Xvel", Mathf.Abs(xVel));
+        Slide();
+       
+
+        NewJump();
+        if (Input.GetButtonDown("LightAttack"))
+        {
+           // cameraParent.GetComponent<Animator>().SetTrigger("Attack");
+            LightAttack();
+        }
 
         if (state != MovementState.Attacking)
         {
             if (xVel < 0)
-            {
                 transform.rotation = new Quaternion(0, 180, 0, 0);
-            }
             if (xVel > 0)
-            {
                 transform.rotation = new Quaternion(0, 0, 0, 0);
-            }
         }
-       
-        Jump();
-        InputForce(new Vector2(xVel * Speed, 0));
+        InputMove(new Vector2(xVel * Speed, 0));
     }
 
-    void Jump()
+    public void LightAttack()
     {
-        if (Input.GetButtonDown("Jump") && OnGround)
+        if (state != MovementState.Attacking && state != MovementState.G_Sliding)
         {
-            animator.SetBool("Jump", true);
-
-            if (!Patted())
+            SetState();
+            switch (state)
             {
-                isJumping = true;
-                jumpTimeCounter = jumpTime;
-                Jump(jumpForce);
+                case MovementState.G_Idle:
+                    state = MovementState.Attacking;
+                    MaxSpeed = 4f;
+                    animator.SetBool("LightAttack", true);
+                    break;
 
-                if (state == MovementState.G_Sliding)
+                case MovementState.G_Running:
+                    TellAnimatorAttackDirection();
+                    state = MovementState.Attacking;
+                    MaxSpeed = 4f;
+                    animator.SetBool("LightAttack", true);
+
+                    break;
+
+                case MovementState.Airborne:
+                    TellAnimatorAttackDirection();
+                    state = MovementState.Attacking;
+                    animator.SetBool("LightAttack", true);
+                    break;
+            }
+            Speed *= RA_speedMultiplier;
+        }
+    }
+
+    void SetXvel(float newXVel)
+    {
+        if (state != MovementState.G_Sliding)
+        {
+            xVel = newXVel;
+        }
+    }
+
+    void Slide()
+    {
+        if (Input.GetButtonDown("Crouch"))
+        {
+            if (state == MovementState.G_Running)
+            {
+
+                slideTimeCounter = slideTime;
+                animator.SetBool("Slide", true);
+                state = MovementState.G_Sliding;
+                MaxSpeed = slideForce;
+            }                      
+        }
+        if (Input.GetButton("Crouch"))
+        {
+            combatController.Slide();
+            if (slideTimeCounter > 0)
+            {
+                slideTimeCounter -= Time.deltaTime;
+            }
+            else
+            {
+                StopSlide();
+            }
+        }
+        else
+        {
+            StopSlide();
+        }
+    }
+
+    public void NewJump()
+    {
+        if (Input.GetButtonDown("Jump"))
+        {
+            if (OnGround)
+            {
+                if (!Patted())
                 {
-                    ResetSlide();
+                    isJumping = true;
+                    Jump(jumpForce);
+                    jumpTimeCounter = jumpTime;
+
+                    if (state == MovementState.G_Sliding)
+                    {
+                        StopSlide();
+                    }
+                    fx.JumpingParticle();
+                    animator.SetBool("Jump", true);
+                }
+            }
+            else if (secondJump)
+            {
+                secondJump = false;
+                if (!Patted())
+                {
+                    isJumping = true;
+                    jumpTimeCounter = jumpTime;
+                    Jump(jumpForce);
+                    fx.JumpingParticle();
                 }
             }
         }
+        HoldJump();
+    }
 
-        if (Input.GetButton("Jump") && isJumping)
+    public void HoldJump()
+    {
+        if (isJumping)
         {
-            if (jumpTimeCounter > 0)
+            if (jumpTimeCounter > 0 && Input.GetButton("Jump"))
             {
-
-                inputForce.Set(inputForce.x, jumpForce);
                 Jump(jumpForce);
                 jumpTimeCounter -= Time.deltaTime;
             }
@@ -164,24 +244,24 @@ public class PlayerController : Entity, IHealth
                 isJumping = false;
             }
         }
-        else
-        {
-            isJumping = false;
-        }
     }
 
-    void ResetSlide()
+    void StopSlide()
     {
-        MaxSpeed = 8;
-        Speed = orgSpeed;
-        slideTimeCounter = slideTime;
-        animator.SetBool("Slide", false);
-        SetState();
+        if (!Patted() && state == MovementState.G_Sliding)
+        {
+            combatController.ResetList();
+            ResetMaxSpeed();
+            Speed = orgSpeed;
+            slideTimeCounter = slideTime;
+            animator.SetBool("Slide", false);
+            SetState();
+        }
     }
 
     void SetState()
     {
-        if (AccessVelocity.x == 0 && OnGround)
+        if (RB.velocity.x == 0 && OnGround)
             state = MovementState.G_Idle;
         else if (!OnGround)
             state = MovementState.Airborne;
@@ -189,27 +269,25 @@ public class PlayerController : Entity, IHealth
             state = MovementState.G_Running;
     }
 
-    protected override void OnPattedEnter()
+    IEnumerator StartStun()
     {
-        if (AccessVelocity.y > 0)
-        {
-            AccessVelocity.Set(AccessVelocity.x, 0);
-            isJumping = false;
-        }
+        yield return new WaitForSeconds(stunTime);
+        Stunned = false;
+        ResetMaxSpeed();
     }
-
 
     void TellAnimatorAttackDirection()
     {
-   
-        if (Input.GetButton("Vertical"))
+        Vector2 lookDir = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+
+        if (lookDir.y != 0)
         {
-            if(Input.GetAxisRaw("Vertical") < 0)
+            if(lookDir.y < 0)
             {
                 animator.SetInteger("Direction", 2);
             }         
         }
-        else if (Input.GetButton("Horizontal"))
+        else if (lookDir.x != 0)
         {
             animator.SetInteger("Direction", 1);
         }
@@ -220,24 +298,54 @@ public class PlayerController : Entity, IHealth
         
     }
 
+    int InputToRaw(float input)
+    {
+        if(input > 0)
+        {
+            input = 1;
+        }
+        if (input < 0)
+        {
+            input = -1;
+        }
+        return (int)input;
+    }
+
     protected override void FixedUpdate()
     {
         base.FixedUpdate();
         animator.SetBool("Grounded", OnGround);
     }
-   
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.GetComponent<Entity>())
+        {
+          //  Impulse(-transform.right * 12);
+           
+        }
+    }
+
+    protected override void OnGroundedEnter()
+    {
+        base.OnGroundedEnter();
+        secondJump = true;
+        fx.LandingParticle();
+    }
+
 
     ///ANIMATION CONTROLS
     ///
 
 
-   
+
 
     public void LightAttackIsDone()
     {
         animator.SetBool("LightAttack", false);
         Speed = orgSpeed;
         SetState();
+        ResetMaxSpeed();
     }
 
     public void JumpIsOver()

@@ -2,83 +2,164 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Hand : Entity, IHealth
-{
-    [SerializeField]
-    float idleTime,
-        chaseTime;
-    [SerializeField]
-    LayerMask playerLayer;
-    [SerializeField]
-    float viewRadius;
-
-    [SerializeField]
-    Transform[] movePoints;
-    GameObject player;
-
-    int currentPoint;
-    Animator animator;
-    float speed = 2f;
-    float jumpForce = 6;
-    public float Speed { get { return speed; } set { speed = value; } }
-    float groundTime = 0;
-    bool grounded;
-    public Vector2 Velocity { get; set; }
+public class Hand : GroundedEnemy, IHealth
+{   
     public int Health { get; set; }
-    bool knowsPlayerLocation;
-    [SerializeField]
-    State state;
-    enum State
+
+    Animator animator;
+
+    [SerializeField] Transform attackPosition;
+    [SerializeField] float attackRadius;
+    [SerializeField] float speed;
+    float orgAngle;
+    [SerializeField] float groundedTimer;
+    [SerializeField] float groundTime;
+
+    bool attackHasStarted = false;
+    public void TakeDamage(int amount)
     {
-        Moving,
+        Health -= amount;
+    }
+
+    enum States
+    {
+        Idle,
+        Walking,
         Chasing,
         Attacking
     }
 
+    [SerializeField] States state = States.Idle;
+
     protected override void Start()
     {
         base.Start();
-        player = GameObject.FindGameObjectWithTag("Player");
-        state = State.Moving;
+        orgAngle = 40;
         animator = GetComponent<Animator>();
     }
 
-  
-    protected override void FixedUpdate()
+    private void Update()
     {
-        CollisionChecks();
-        DecideDirection();
-
-        switch (state)
+        if (!OnGround)
         {
-            case State.Moving:
-                if (idleTime > 2)
-                    InputForce(transform.right * speed);
-                break;
+            groundedTimer = 0;
+        }
+        else
+        {
+            groundedTimer += Time.deltaTime;
+        }
 
-            case State.Chasing:
-                InputForce(transform.right * speed);
-                break;
+        if(Stunned)
+        {
+            if (Timer(ref stunTimer, StunTime))
+            {
+                StunIsFinished();
+                DecideState();
+            }             
+        }
 
-            case State.Attacking:
-                InputForce(transform.right * 0);
-                break;
-        }   
-        Move();
-        ResetPhysicsValues();
+        else
+        {
+            switch (state)
+            {
+                case States.Idle:
+                    SetViewAngle(orgAngle);
+                    animator.SetInteger("AttackState", 0);
+                    if (Timer(ref idleTimer, IdleTime))
+                    {
+                        DecideState();
+                    } 
+                    break;
 
-        knowsPlayerLocation = LookAround();
+                case States.Walking:
+                    SetViewAngle(orgAngle);
+                    animator.SetInteger("AttackState", 0);
+                    if(JumpIsNeeded() && groundedTimer > groundTime)
+                    {
+                        RB.velocity = new Vector2(RB.velocity.x, JumpForce);
+                    }
+                    InputMove(new Vector2(PatrolPoints[CurrentPoint].position.x - transform.position.x, 0).normalized * speed);
+                    SetRotation();
+                    DecidePatrolPoint();
+                    break;
 
-        DecideAction();       
+                case States.Chasing:
+                    SetViewAngle(180);
+                    animator.SetInteger("AttackState", 0);
+                    if (JumpIsNeeded() && groundedTimer > groundTime)
+                    {
+                        RB.velocity = new Vector2(RB.velocity.x, JumpForce);
+                    }
+                    InputMove(new Vector2(Player.transform.position.x - transform.position.x, 0).normalized * speed);
+                    SetRotation();
+                    break;
+
+                case States.Attacking:
+                    if(animator.GetInteger("AttackState") < 1)
+                    {
+                        animator.SetInteger("AttackState", 1);
+                    }                  
+                    break;
+            }
+        }      
     }
 
-    void DecideDirection()
+    protected override void FixedUpdate()
+    {
+        if(state != States.Idle && state != States.Attacking)
+        {
+            DecideState();
+        }
+        base.FixedUpdate();
+    }
+
+    protected override void OnPointSwitch()
+    {
+        idleTimer = 0;
+        state = States.Idle;
+    }
+
+    void DecideState()
+    {      
+        States wantedState = state;
+
+        if (CanSeePlayer())
+        {
+            wantedState = States.Chasing;
+        }
+        else
+        {
+            wantedState = States.Walking;
+        }
+
+        if (wantedState == States.Chasing)
+        {
+            if (Physics2D.OverlapCircle(attackPosition.position, attackRadius, playerLayer))
+            {
+                wantedState = States.Attacking;                
+            }
+        }
+        state = wantedState;
+    }
+
+    void SetRotation()
     {
         switch (state)
         {
-            case State.Moving:
+            case States.Chasing:
+                if (Mathf.Abs(RB.velocity.x) > 0)
+                {
+                    if (RB.velocity.x < 0)
+                    {
+                        transform.rotation = new Quaternion(0, 180, 0, 0);
+                    }
+                    else
+                        transform.rotation = new Quaternion(0, 0, 0, 0);
+                }
+                break;
 
-                if (movePoints[currentPoint].transform.position.x < transform.position.x)
+            case States.Walking:
+                if(PatrolPoints[CurrentPoint].position.x - transform.position.x < 0)
                 {
                     transform.rotation = new Quaternion(0, 180, 0, 0);
                 }
@@ -86,176 +167,38 @@ public class Hand : Entity, IHealth
                 {
                     transform.rotation = new Quaternion(0, 0, 0, 0);
                 }
-                if (Vector2.Distance(transform.position, movePoints[currentPoint].position) < 0.5f)
-                {
-                    idleTime = 0;
-                    if (currentPoint != movePoints.Length - 1)
-                    {
-                        currentPoint++;
-                    }
-                    else
-                    {
-                        currentPoint = 0;
-                    }
-
-                }
-                break;
-
-            case State.Chasing:
-                //if (knowsPlayerLocation)
-              //  {
-                    if (player.transform.position.x < transform.position.x)
-                    {
-                        transform.rotation = new Quaternion(0, 180, 0, 0);
-                    }
-                    else
-                    {
-                        transform.rotation = new Quaternion(0, 0, 0, 0);
-                    }
-               // }             
-                break;
-        }       
-    }
-
-    bool LookAround()
-    {
-        switch (state)
-        {
-            case State.Moving:
-                if (Physics2D.OverlapCircle(transform.position, viewRadius, playerLayer))
-                {
-                    Vector2 difference = player.transform.position - transform.position;
-                    float sign = (player.transform.position.y > transform.position.y) ? -1.0f : 1.0f;
-                    float angle = Vector2.Angle(transform.right, difference) * sign;
-
-                    if (angle < 45 && angle > -45)
-                    {
-                        if (Physics2D.Raycast(transform.position, player.transform.position - transform.position, 100, ~(1 << LayerMask.NameToLayer("Enemy"))).transform.tag == "Player")
-                        {
-                            if (state != State.Attacking)
-                            {
-                                state = State.Chasing;
-                            }
-
-                            return true;
-                        }
-                    }
-                }
-                break;
-                
-                
-
-            case State.Chasing:
-                if (Physics2D.OverlapCircle(transform.position, viewRadius, playerLayer))
-                {
-                    return true;                  
-                }
                 break;
         }
-        
-        return false;
+       
     }
 
-    void DecideAction()
+    protected override void OnDrawGizmos()
     {
-        switch (state)
-        {
-            case State.Chasing:
-                if (Physics2D.OverlapCircle(new Vector2(transform.position.x + 0.34f * transform.right.x, transform.position.y), 0.65f, playerLayer)
-                    || Vector2.Distance(transform.position, (Vector2)player.transform.position + player.GetComponent<PlayerController>().AccessVelocity * Time.fixedDeltaTime * 10) < 0.8f)
-                {
-                    animator.SetInteger("AttackState", 1);
-                    state = State.Attacking;
-
-                }
-                
-                break;
-
-            case State.Attacking:
-                if (Vector2.Distance(transform.position, (Vector2)player.transform.position + (player.GetComponent<PlayerController>().AccessVelocity * Time.fixedDeltaTime * 10)) < 0.8f)
-                {
-                    animator.SetInteger("AttackState", 1);
-                }
-                if (Physics2D.OverlapCircle(new Vector2(transform.position.x + 0.34f * transform.right.x, transform.position.y), 0.65f, playerLayer))
-                {
-                    animator.SetInteger("AttackState", 2);
-                }
-                if (Vector2.Distance(transform.position, (Vector2)player.transform.position + (player.GetComponent<PlayerController>().AccessVelocity * Time.fixedDeltaTime * 10)) > 3)
-                {
-                    AttackIsFinished();
-                }
-                if (player.transform.position.x > transform.position.x && transform.rotation == new Quaternion(0, 180, 0, 0))
-                {
-                    AttackIsFinished();
-                }
-                if (player.transform.position.x < transform.position.x && transform.rotation == new Quaternion(0, 0, 0, 0))
-                {
-                    AttackIsFinished();
-                }
-                break;
-        }
+        base.OnDrawGizmos();
+        Gizmos.DrawWireSphere(attackPosition.position, attackRadius);
     }
-
-    public void TakeDamage(int amount)
+    
+    public void PlayerStillInRange()
     {
-        Health -= amount;
-    }
-
-    private void Update()
-    {
-        idleTime += Time.deltaTime;
-      
-        if (!knowsPlayerLocation && state == State.Chasing)
+        if (Physics2D.OverlapCircle(attackPosition.position, attackRadius, playerLayer))
         {
-            chaseTime += Time.deltaTime;
-            if (chaseTime > 1.5f)
-            {
-                chaseTime = 0;
-                state = State.Moving;
-            }
-        }
-        DecideAction();
-        Velocity = new Vector2(transform.right.x * speed, Velocity.y - 25 * Time.deltaTime);
-        
-        if (grounded)
-        {
-            groundTime += Time.deltaTime;
-            if (groundTime > 0.1f)
-            {
-                Velocity = new Vector2(Velocity.x, 0);
-            }
+            animator.SetInteger("AttackState", 2);
         }
         else
         {
-            groundTime = 0;
+            DecideState();
         }
     }
-
-    void DirectionTowardsMe()
-    {
-
-    }
-
-    ////ANIMATOR
-
+    
     public void Attack()
-    {       
-        if(Physics2D.OverlapCircle(new Vector2(transform.position.x + 0.34f * transform.right.x, transform.position.y), 0.65f, playerLayer))
-        {
-            float xDistance = transform.position.x - player.transform.position.x;
-            player.GetComponent<PlayerController>().AddForce(new Vector2(-xDistance * 10, 3));
-        }
-    }
-
-    public void AttackIsFinished()
     {
-        animator.SetInteger("AttackState", 0);
-        state = State.Chasing;
+        PlayerController pC = Player.GetComponent<PlayerController>();
+        float xDistance = Player.transform.position.x - transform.position.x;
+        pC.RB.velocity = new Vector2(xDistance / Mathf.Abs(xDistance) * 2, 1) * 6;
     }
 
-    private void OnDrawGizmos()
+    public void ResetAttack()
     {
-        Gizmos.DrawWireSphere(new Vector2(transform.position.x + 0.34f * transform.right.x, transform.position.y), 0.65f);
+        DecideState();
     }
-
 }
