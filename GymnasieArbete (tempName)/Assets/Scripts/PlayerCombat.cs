@@ -61,13 +61,12 @@ public class PlayerCombat : MonoBehaviour
         {
             if(sideAirIndex == 0)
             {
-                DealKnockbackIfTarget(new Vector2(3 * transform.right.x, 0), results[i]);
+                RegisterHitIfTarget(dmgSideAir, new Vector2(3 * transform.right.x, 0), results[i]);
             }
             else
             {
-                DealKnockbackIfTarget(new Vector2(5 * transform.right.x,8), results[i]);
+                RegisterHitIfTarget(dmgSideAir, new Vector2(5 * transform.right.x, 8), results[i]);
             }
-            DealDamageIfTarget(dmgSideAir, results[i]);
             ParticleIfTarget(results[i]);
         }
         sideAirIndex++;
@@ -81,8 +80,7 @@ public class PlayerCombat : MonoBehaviour
 
         for (int i = 0; i < results.Length; i++)
         {
-            DealKnockbackIfTarget(new Vector2(7 * transform.right.x, 4), results[i]);
-            DealDamageIfTarget(dmgSide, results[i]);
+            RegisterHitIfTarget(dmgSide, new Vector2(7 * transform.right.x, 4), results[i]);
             ParticleIfTarget(results[i]);
         }
     }
@@ -93,7 +91,10 @@ public class PlayerCombat : MonoBehaviour
 
         for (int i = 0; i < results.Length; i++)
         {
-            DealKnockbackIfTarget(Vector2.up * slideKnockup, results[i]);
+            if (!hitEntities.Contains(results[i].GetComponent<Entity>()))
+            {
+                RegisterHitIfTarget(0, Vector2.up * slideKnockup, results[i]);
+            }
 
             if (results[i].GetComponent<Entity>())
                 hitEntities.Add(results[i].GetComponent<Entity>());
@@ -108,8 +109,7 @@ public class PlayerCombat : MonoBehaviour
 
         for (int i = 0; i < results.Length; i++)
         {
-           // DealKnockbackIfTarget(Vector2.down * 2, results[i]);
-            DealDamageIfTarget(dmgDownAir, results[i]);
+            RegisterHitIfTarget(dmgNeutralAir, Vector2.zero, results[i]);
         }
         if (dealtDamage)
             controller.Jump(downAirPushback);
@@ -123,10 +123,20 @@ public class PlayerCombat : MonoBehaviour
 
         for (int i = 0; i < results.Length; i++)
         {
-            DealDamageIfTarget(dmgNeutralAir, results[i]);
-            DealKnockbackIfTarget(Vector2.up * 8, results[i]);
+            RegisterHitIfTarget(dmgNeutralAir, Vector2.up * 8, results[i]);
         }
         ResetVariables();
+    }
+
+    void RegisterHitIfTarget(int damage,Vector2 knockback, Collider2D collider)
+    {
+        if (collider.GetComponent<Entity>() && collider.gameObject != gameObject)
+        {
+            Time.timeScale = 0.1f;
+            collider.GetComponent<Entity>().GetHit(damage, knockback);
+            StartCoroutine(LerpTimeBack(0.1f));
+            dealtDamage = true;
+        }
     }
 
     void DealDamageIfTarget(int damage, Collider2D collider)
@@ -144,19 +154,6 @@ public class PlayerCombat : MonoBehaviour
     {
         yield return new WaitForSecondsRealtime(seconds);
         Time.timeScale = 1;
-    }
-
-    void DealKnockbackIfTarget(Vector2 knockback, Collider2D collider)
-    {
-        if (collider.GetComponent<Entity>() && collider.gameObject != gameObject)
-        {
-            if (!hitEntities.Contains(collider.GetComponent<Hand>()))
-            {
-
-                collider.GetComponent<Rigidbody2D>().velocity = knockback;
-                collider.GetComponent<GroundedEnemy>().Stun();
-            }
-        }
     }
 
     void ParticleIfTarget(Collider2D collider)

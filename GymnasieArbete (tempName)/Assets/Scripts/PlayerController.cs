@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 
-public class PlayerController : Entity, IHealth
+public class PlayerController : Entity
 {
     [SerializeField]
     Transform feetTransform;
@@ -21,7 +21,7 @@ public class PlayerController : Entity, IHealth
     PlayerCombat combatController;
     PlayerFX fx;
     public float Speed { get; set; }
-    public int Health { get; set; }
+
     public MovementState State { get { return state; } set { state = value; } }
     float jumpTimeCounter;
     float jumpTime = 0.2f;
@@ -35,8 +35,10 @@ public class PlayerController : Entity, IHealth
 
     bool isJumping;
     bool secondJump;
+    bool slideAttackIsReady;
     Animator animator;
     ShakeTransform cameraShake;
+
 
     public enum MovementState
     {
@@ -63,8 +65,7 @@ public class PlayerController : Entity, IHealth
         base.Start();       
         jumpTimeCounter = jumpTime;
         slideTimeCounter = slideTime;
-        Speed = 100;
-        Health = 1000;
+        Speed = 30;
         orgSpeed = Speed;
         animator = GetComponent<Animator>();
         combatController = GetComponent<PlayerCombat>();
@@ -76,28 +77,23 @@ public class PlayerController : Entity, IHealth
         fx.CamShake(data);
     }
 
-    public void Knockback(Vector2 force)
+    public override void GetHit(int damage, Vector2 knockback)
     {
         if (!Stunned)
         {
-            Stunned = true;
-            MaxedSpeed();
-            RB.velocity = force;
+            base.GetHit(damage, knockback);
             StartCoroutine(StartStun());
         }
-
-    }
-
-    public void TakeDamage(int amount)
-    {
-        if (!Stunned)
-            Health -= amount;
+        
     }
 
     void Update()
     {
         if (Stunned)
+        {
             return;
+        }
+            
 
         if(state != MovementState.G_Sliding && state != MovementState.Attacking)
         {
@@ -168,7 +164,7 @@ public class PlayerController : Entity, IHealth
     {
         if (Input.GetButtonDown("Crouch"))
         {
-            if (state == MovementState.G_Running)
+            if (state == MovementState.G_Running && OnGround)
             {
 
                 slideTimeCounter = slideTime;
@@ -179,7 +175,11 @@ public class PlayerController : Entity, IHealth
         }
         if (Input.GetButton("Crouch"))
         {
-            combatController.Slide();
+            if (slideAttackIsReady)
+            {
+                combatController.Slide();
+            }
+
             if (slideTimeCounter > 0)
             {
                 slideTimeCounter -= Time.deltaTime;
@@ -276,6 +276,16 @@ public class PlayerController : Entity, IHealth
         ResetMaxSpeed();
     }
 
+    void AnimSlideAttack()
+    {
+        slideAttackIsReady = true;
+    }
+
+    void AnimSlideStop()
+    {
+        slideAttackIsReady = false;
+    }
+
     void TellAnimatorAttackDirection()
     {
         Vector2 lookDir = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
@@ -319,11 +329,7 @@ public class PlayerController : Entity, IHealth
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.GetComponent<Entity>())
-        {
-          //  Impulse(-transform.right * 12);
-           
-        }
+        
     }
 
     protected override void OnGroundedEnter()
@@ -336,9 +342,6 @@ public class PlayerController : Entity, IHealth
 
     ///ANIMATION CONTROLS
     ///
-
-
-
 
     public void LightAttackIsDone()
     {

@@ -96,9 +96,9 @@ public class GroundedEnemy : Entity
             
         }
     }
-    
-    public virtual void Stun()
-    {   
+
+    protected override void Stun()
+    {
         Stunned = true;
         MaxedSpeed();
         stunTimer = 0;

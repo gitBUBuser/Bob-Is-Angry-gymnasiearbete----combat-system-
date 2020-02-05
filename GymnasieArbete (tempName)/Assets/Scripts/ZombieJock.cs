@@ -40,7 +40,7 @@ public class ZombieJock : GroundedEnemy
         myAnim = GetComponent<Animator>();
     }
 
-    public override void Stun()
+    protected override void Stun()
     {
         myAnim.SetBool("Stunned", true);
         base.Stun();
@@ -119,6 +119,17 @@ public class ZombieJock : GroundedEnemy
 
     }
 
+
+    public override void GetHit(int damage, Vector2 knockback)
+    {
+        if(!attacked)
+        {
+            Debug.Log("GotHIT");
+            base.GetHit(damage, knockback);
+        }
+
+    }
+
     protected override void OnGroundedEnter()
     {      
         if (attacked)
@@ -165,9 +176,11 @@ public class ZombieJock : GroundedEnemy
 
     IEnumerator RecoverFromAttack()
     {
-        yield return new WaitForSeconds(2.5f);
+        RB.gravityScale = 3;
+        yield return new WaitForSeconds(2.5f);      
         myAnim.SetTrigger("DoneRecovering");
         yield return new WaitForSeconds(1f);
+        RB.gravityScale = 1;
         coolingDown = false;
         ResetMaxSpeed();
     }
@@ -181,9 +194,9 @@ public class ZombieJock : GroundedEnemy
         MaxedSpeed();
         Vector2 distance = Player.transform.position - transform.position;
         Vector2 jumpForce = distance;
-        jumpForce.y += 2.5f;
-        RB.velocity = jumpForce * 2;
-        yield return new WaitForSeconds(0.1f);
+        jumpForce.y += 3.5f;
+        RB.velocity = jumpForce * 2.1f;
+        yield return new WaitForSeconds(2f);
         myAnim.SetTrigger("Jump");
     }
 
@@ -213,11 +226,10 @@ public class ZombieJock : GroundedEnemy
         {
             if (collider[i].gameObject.GetComponent<PlayerController>())
             {
-                PlayerController controller = collider[i].gameObject.GetComponent<PlayerController>();
-                controller.TakeDamage(6);
+                PlayerController controller = collider[i].gameObject.GetComponent<PlayerController>();               
                 float xDistance = Player.transform.position.x - transform.position.x;
                 Vector2 knockback = new Vector2(xDistance, 0.5f).normalized;
-                controller.Knockback(knockback * 7);
+                controller.GetHit(35, knockback * 18);
             }
         }
     }

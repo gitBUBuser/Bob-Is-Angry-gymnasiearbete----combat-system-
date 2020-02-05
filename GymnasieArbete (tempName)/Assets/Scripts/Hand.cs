@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Hand : GroundedEnemy, IHealth
+public class Hand : GroundedEnemy
 {   
     public int Health { get; set; }
 
@@ -16,10 +16,6 @@ public class Hand : GroundedEnemy, IHealth
     [SerializeField] float groundTime;
 
     bool attackHasStarted = false;
-    public void TakeDamage(int amount)
-    {
-        Health -= amount;
-    }
 
     enum States
     {

@@ -17,6 +17,10 @@ public class Entity : MonoBehaviour
     float orgMaxSpeed;
     float groundedTime;
 
+    [SerializeField]
+    public int maxHealth;
+    public int currentHealth;
+
     bool previousGrounded;
     bool previousPatted;
     public bool OnGround { get; set; }
@@ -29,9 +33,27 @@ public class Entity : MonoBehaviour
 
     protected virtual void Start()
     {
+        currentHealth = maxHealth;
         orgMaxSpeed = maxSpeed;
         rigidBody = GetComponent<Rigidbody2D>();
         worldCollider = GetComponent<CapsuleCollider2D>();
+    }
+
+    public virtual void GetHit(int damage, Vector2 knockback)
+    {
+        Stun();
+        TakeDamage(damage);
+        RB.velocity = knockback;
+    }
+
+    protected virtual void Stun()
+    {
+        Stunned = true;
+    }
+
+    protected virtual void TakeDamage(int damage)
+    {
+        currentHealth -= damage;
     }
 
     protected void ResetMaxSpeed()

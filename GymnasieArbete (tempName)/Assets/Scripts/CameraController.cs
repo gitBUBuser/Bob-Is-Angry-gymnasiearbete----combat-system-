@@ -43,10 +43,13 @@ void FollowPlayer()
         {
             velOffset = Vector3.Lerp(velOffset, (Vector3)playerT.GetComponent<Rigidbody2D>().velocity / 10, Time.deltaTime * 2f);
             BoxCollider2D boundary = GameObject.Find("Boundary").GetComponent<BoxCollider2D>();
+            /* transform.position = new Vector3(Mathf.Clamp(playerT.position.x, boundary.bounds.min.x + cameraBox.size.x / 2, boundary.bounds.max.x - cameraBox.size.x / 2),
+                 Mathf.Clamp(playerT.position.y, boundary.bounds.min.y + cameraBox.size.y / 2, boundary.bounds.max.y - cameraBox.size.y / 2),
+                 transform.position.z) + velOffset;*/
+
             transform.position = new Vector3(Mathf.Clamp(playerT.position.x, boundary.bounds.min.x + cameraBox.size.x / 2, boundary.bounds.max.x - cameraBox.size.x / 2),
                 Mathf.Clamp(playerT.position.y, boundary.bounds.min.y + cameraBox.size.y / 2, boundary.bounds.max.y - cameraBox.size.y / 2),
-                transform.position.z) + velOffset;
-                
+                transform.position.z);
         }
     }
 }
