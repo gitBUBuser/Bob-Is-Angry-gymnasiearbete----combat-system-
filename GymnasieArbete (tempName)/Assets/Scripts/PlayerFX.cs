@@ -13,9 +13,21 @@ public class PlayerFX : MonoBehaviour
     [SerializeField]
     GameObject bloodSplatSideParticle;
     [SerializeField]
+    GameObject bloodSplatUp;
+    [SerializeField]
+    GameObject bloodSplatDown;
+    [SerializeField]
     GameObject[] bloodSpatSideAir;
     [SerializeField]
     GameObject jumpingParticle;
+
+    [SerializeField]
+    Transform bsSpawnSide,
+        bsSpawnUpAir,
+        bsSpawnDownAir;
+
+    [SerializeField]
+    Transform[] bsSpawnSideAir;
 
     [SerializeField]
     Transform feetPosition;
@@ -58,13 +70,22 @@ public class PlayerFX : MonoBehaviour
 
     public void BloodSplatSide(Vector2 position)
     {
-        Instantiate(bloodSplatSideParticle, position, transform.rotation);
+        Instantiate(bloodSplatSideParticle, bsSpawnSide.position, transform.rotation);
+    }
+
+    public void BloodSplatDown(Vector2 position)
+    {
+        Instantiate(bloodSplatDown, bsSpawnDownAir.position, transform.rotation);
+    }
+
+    public void BloodSplatUp(Vector2 position)
+    {
+        Instantiate(bloodSplatUp, bsSpawnUpAir.position, transform.rotation);
     }
 
     public void BloodSplatSair(Transform parent, Vector2 position, int index)
     {
-        GameObject test = Instantiate(bloodSpatSideAir[index], position, new Quaternion(0, transform.rotation.y + 180, 0, 0), parent);
-        test.transform.localRotation = new Quaternion(0, 180, 0, 0);
+        GameObject test = Instantiate(bloodSpatSideAir[index], bsSpawnSideAir[index].position, transform.rotation);
     }
 
     public void DestroySlideParticle()

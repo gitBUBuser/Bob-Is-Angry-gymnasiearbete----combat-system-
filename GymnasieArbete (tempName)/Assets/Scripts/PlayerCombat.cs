@@ -110,6 +110,7 @@ public class PlayerCombat : MonoBehaviour
         for (int i = 0; i < results.Length; i++)
         {
             RegisterHitIfTarget(dmgNeutralAir, Vector2.zero, results[i]);
+            ParticleIfTarget(results[i]);
         }
         if (dealtDamage)
             controller.Jump(downAirPushback);
@@ -124,6 +125,7 @@ public class PlayerCombat : MonoBehaviour
         for (int i = 0; i < results.Length; i++)
         {
             RegisterHitIfTarget(dmgNeutralAir, Vector2.up * 8, results[i]);
+            ParticleIfTarget(results[i]);
         }
         ResetVariables();
     }
@@ -168,6 +170,14 @@ public class PlayerCombat : MonoBehaviour
 
                 case AttackType.Side:
                     fx.BloodSplatSide(collider.transform.position);
+                    break;
+
+                case AttackType.UAir:
+                    fx.BloodSplatUp(collider.transform.position);
+                    break;
+
+                case AttackType.DAir:
+                    fx.BloodSplatDown(collider.transform.position);
                     break;
             }
         }

@@ -5179,6 +5179,36 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &142000444
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 142000445}
+  m_Layer: 10
+  m_Name: BloodSplatup
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &142000445
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 142000444}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.036, y: 0.872, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 857481064}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &162832379
 GameObject:
   m_ObjectHideFlags: 0
@@ -5248,7 +5278,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1162759467
   m_SortingLayer: 3
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_Sprite: {fileID: -2910482699516700778, guid: 55c472e44e0ecbc479d115f9b7c286f5,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -5330,7 +5360,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1162759467
   m_SortingLayer: 3
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_Sprite: {fileID: -2910482699516700778, guid: 55c472e44e0ecbc479d115f9b7c286f5,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -20541,80 +20571,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b9f3927dbf8f974f9207d36126bb765, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1001 &422003798
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 561892682409120036, guid: 846227ed42e1b78469865847dd24ea10,
-        type: 3}
-      propertyPath: m_WasSpriteAssigned
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1537300269534687064, guid: 846227ed42e1b78469865847dd24ea10,
-        type: 3}
-      propertyPath: m_Name
-      value: BloodSplatSideair2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4536279398912086485, guid: 846227ed42e1b78469865847dd24ea10,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -0.5926973
-      objectReference: {fileID: 0}
-    - target: {fileID: 4536279398912086485, guid: 846227ed42e1b78469865847dd24ea10,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -15.610845
-      objectReference: {fileID: 0}
-    - target: {fileID: 4536279398912086485, guid: 846227ed42e1b78469865847dd24ea10,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -9.40625
-      objectReference: {fileID: 0}
-    - target: {fileID: 4536279398912086485, guid: 846227ed42e1b78469865847dd24ea10,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4536279398912086485, guid: 846227ed42e1b78469865847dd24ea10,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4536279398912086485, guid: 846227ed42e1b78469865847dd24ea10,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4536279398912086485, guid: 846227ed42e1b78469865847dd24ea10,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4536279398912086485, guid: 846227ed42e1b78469865847dd24ea10,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 23
-      objectReference: {fileID: 0}
-    - target: {fileID: 4536279398912086485, guid: 846227ed42e1b78469865847dd24ea10,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4536279398912086485, guid: 846227ed42e1b78469865847dd24ea10,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4536279398912086485, guid: 846227ed42e1b78469865847dd24ea10,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 846227ed42e1b78469865847dd24ea10, type: 3}
 --- !u!1 &431097624
 GameObject:
   m_ObjectHideFlags: 0
@@ -45038,6 +44994,36 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &636066372
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 636066373}
+  m_Layer: 10
+  m_Name: BloodsplatsideAir2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &636066373
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 636066372}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.764, y: -0.056, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 857481064}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &643526039
 GameObject:
   m_ObjectHideFlags: 0
@@ -45107,7 +45093,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1162759467
   m_SortingLayer: 3
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_Sprite: {fileID: -2910482699516700778, guid: 55c472e44e0ecbc479d115f9b7c286f5,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -45271,7 +45257,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1162759467
   m_SortingLayer: 3
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_Sprite: {fileID: -2910482699516700778, guid: 55c472e44e0ecbc479d115f9b7c286f5,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -45353,7 +45339,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1162759467
   m_SortingLayer: 3
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_Sprite: {fileID: -2910482699516700778, guid: 55c472e44e0ecbc479d115f9b7c286f5,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -45499,6 +45485,41 @@ MonoBehaviour:
   - {x: -0.47542048, y: 0.30262, z: 0}
   - {x: -0.6437278, y: 0.22216052, z: 0}
   - {x: -0.7310939, y: 0.07304829, z: 0}
+--- !u!1 &857481063
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 857481064}
+  m_Layer: 10
+  m_Name: ParticlePositions
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &857481064
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 857481063}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 2016461970}
+  - {fileID: 636066373}
+  - {fileID: 1967275517}
+  - {fileID: 2099124410}
+  - {fileID: 142000445}
+  m_Father: {fileID: 1298163266}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &919023761
 GameObject:
   m_ObjectHideFlags: 0
@@ -45947,7 +45968,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1162759467
   m_SortingLayer: 3
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_Sprite: {fileID: -2910482699516700778, guid: 55c472e44e0ecbc479d115f9b7c286f5,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -46181,6 +46202,81 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.53418016, y: 0.5}
   m_EdgeRadius: 0
+--- !u!1001 &1284909521
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2506107441249533180, guid: 580e89b1d44d62144b73660db2d10dd1,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -3.70151
+      objectReference: {fileID: 0}
+    - target: {fileID: 2506107441249533180, guid: 580e89b1d44d62144b73660db2d10dd1,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.7781764
+      objectReference: {fileID: 0}
+    - target: {fileID: 2506107441249533180, guid: 580e89b1d44d62144b73660db2d10dd1,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.0973521
+      objectReference: {fileID: 0}
+    - target: {fileID: 2506107441249533180, guid: 580e89b1d44d62144b73660db2d10dd1,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2506107441249533180, guid: 580e89b1d44d62144b73660db2d10dd1,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2506107441249533180, guid: 580e89b1d44d62144b73660db2d10dd1,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2506107441249533180, guid: 580e89b1d44d62144b73660db2d10dd1,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2506107441249533180, guid: 580e89b1d44d62144b73660db2d10dd1,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 24
+      objectReference: {fileID: 0}
+    - target: {fileID: 2506107441249533180, guid: 580e89b1d44d62144b73660db2d10dd1,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2506107441249533180, guid: 580e89b1d44d62144b73660db2d10dd1,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2506107441249533180, guid: 580e89b1d44d62144b73660db2d10dd1,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8447119423146676326, guid: 580e89b1d44d62144b73660db2d10dd1,
+        type: 3}
+      propertyPath: m_Name
+      value: BloodsplatSide
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 580e89b1d44d62144b73660db2d10dd1, type: 3}
+--- !u!4 &1298163266 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4496033747781639770, guid: 7608e4bb54c1bb44ab953223db0014b5,
+    type: 3}
+  m_PrefabInstance: {fileID: 4496033746585506281}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1301885895
 GameObject:
   m_ObjectHideFlags: 0
@@ -46499,80 +46595,6 @@ Transform:
   m_Father: {fileID: 1489361096}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &1358336353
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 561604950345134762, guid: 47423bfdba3a1b4468aa7149691d7f37,
-        type: 3}
-      propertyPath: m_WasSpriteAssigned
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1276789114383575890, guid: 47423bfdba3a1b4468aa7149691d7f37,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -0.41
-      objectReference: {fileID: 0}
-    - target: {fileID: 1276789114383575890, guid: 47423bfdba3a1b4468aa7149691d7f37,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -16.22
-      objectReference: {fileID: 0}
-    - target: {fileID: 1276789114383575890, guid: 47423bfdba3a1b4468aa7149691d7f37,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -9.40625
-      objectReference: {fileID: 0}
-    - target: {fileID: 1276789114383575890, guid: 47423bfdba3a1b4468aa7149691d7f37,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1276789114383575890, guid: 47423bfdba3a1b4468aa7149691d7f37,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1276789114383575890, guid: 47423bfdba3a1b4468aa7149691d7f37,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1276789114383575890, guid: 47423bfdba3a1b4468aa7149691d7f37,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1276789114383575890, guid: 47423bfdba3a1b4468aa7149691d7f37,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 22
-      objectReference: {fileID: 0}
-    - target: {fileID: 1276789114383575890, guid: 47423bfdba3a1b4468aa7149691d7f37,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1276789114383575890, guid: 47423bfdba3a1b4468aa7149691d7f37,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1276789114383575890, guid: 47423bfdba3a1b4468aa7149691d7f37,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8207378101860972302, guid: 47423bfdba3a1b4468aa7149691d7f37,
-        type: 3}
-      propertyPath: m_Name
-      value: BloodSplatSideair1
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 47423bfdba3a1b4468aa7149691d7f37, type: 3}
 --- !u!1 &1470753619
 GameObject:
   m_ObjectHideFlags: 0
@@ -46642,7 +46664,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1162759467
   m_SortingLayer: 3
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_Sprite: {fileID: -2910482699516700778, guid: 55c472e44e0ecbc479d115f9b7c286f5,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -46724,7 +46746,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1162759467
   m_SortingLayer: 3
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_Sprite: {fileID: -2910482699516700778, guid: 55c472e44e0ecbc479d115f9b7c286f5,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -47101,90 +47123,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &1639990286
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 2506107441249533180, guid: 580e89b1d44d62144b73660db2d10dd1,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -3.70151
-      objectReference: {fileID: 0}
-    - target: {fileID: 2506107441249533180, guid: 580e89b1d44d62144b73660db2d10dd1,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 1.7781764
-      objectReference: {fileID: 0}
-    - target: {fileID: 2506107441249533180, guid: 580e89b1d44d62144b73660db2d10dd1,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -0.0973521
-      objectReference: {fileID: 0}
-    - target: {fileID: 2506107441249533180, guid: 580e89b1d44d62144b73660db2d10dd1,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2506107441249533180, guid: 580e89b1d44d62144b73660db2d10dd1,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2506107441249533180, guid: 580e89b1d44d62144b73660db2d10dd1,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2506107441249533180, guid: 580e89b1d44d62144b73660db2d10dd1,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2506107441249533180, guid: 580e89b1d44d62144b73660db2d10dd1,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 21
-      objectReference: {fileID: 0}
-    - target: {fileID: 2506107441249533180, guid: 580e89b1d44d62144b73660db2d10dd1,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2506107441249533180, guid: 580e89b1d44d62144b73660db2d10dd1,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2506107441249533180, guid: 580e89b1d44d62144b73660db2d10dd1,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4628074073845710846, guid: 580e89b1d44d62144b73660db2d10dd1,
-        type: 3}
-      propertyPath: m_Size.x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4628074073845710846, guid: 580e89b1d44d62144b73660db2d10dd1,
-        type: 3}
-      propertyPath: m_Size.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4628074073845710846, guid: 580e89b1d44d62144b73660db2d10dd1,
-        type: 3}
-      propertyPath: m_WasSpriteAssigned
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8447119423146676326, guid: 580e89b1d44d62144b73660db2d10dd1,
-        type: 3}
-      propertyPath: m_Name
-      value: BloodsplatSide
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 580e89b1d44d62144b73660db2d10dd1, type: 3}
 --- !u!1 &1675727419
 GameObject:
   m_ObjectHideFlags: 0
@@ -47249,7 +47187,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 25
+  m_RootOrder: 22
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1702138660
 GameObject:
@@ -47320,7 +47258,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1162759467
   m_SortingLayer: 3
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_Sprite: {fileID: -2910482699516700778, guid: 55c472e44e0ecbc479d115f9b7c286f5,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -47586,7 +47524,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1162759467
   m_SortingLayer: 3
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_Sprite: {fileID: -2910482699516700778, guid: 55c472e44e0ecbc479d115f9b7c286f5,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -52103,6 +52041,66 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1967275516
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1967275517}
+  m_Layer: 10
+  m_Name: BloodsplatSide
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1967275517
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1967275516}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.796, y: -0.056, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 857481064}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2016461969
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2016461970}
+  m_Layer: 10
+  m_Name: BloodSplatSideAir1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2016461970
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2016461969}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.668, y: -0.216, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 857481064}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2074109447
 GameObject:
   m_ObjectHideFlags: 0
@@ -52217,6 +52215,36 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &2099124409
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2099124410}
+  m_Layer: 10
+  m_Name: BloodsplatDown
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2099124410
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2099124409}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.036, y: -0.92, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 857481064}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &3062514369766753782
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -52550,7 +52578,7 @@ PrefabInstance:
     - target: {fileID: 9014692672661408662, guid: 642b44b190c4a5d4bb400f942bddeb53,
         type: 3}
       propertyPath: m_RootOrder
-      value: 24
+      value: 21
       objectReference: {fileID: 0}
     - target: {fileID: 9014692672661408662, guid: 642b44b190c4a5d4bb400f942bddeb53,
         type: 3}
@@ -52593,6 +52621,10 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 652667463, guid: 7608e4bb54c1bb44ab953223db0014b5, type: 3}
+      propertyPath: bsSpawnSideAir.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 652667463, guid: 7608e4bb54c1bb44ab953223db0014b5, type: 3}
       propertyPath: bloodSpatSideAir.Array.data[0]
       value: 
       objectReference: {fileID: 8207378101860972302, guid: 47423bfdba3a1b4468aa7149691d7f37,
@@ -52602,6 +52634,36 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1537300269534687064, guid: 846227ed42e1b78469865847dd24ea10,
         type: 3}
+    - target: {fileID: 652667463, guid: 7608e4bb54c1bb44ab953223db0014b5, type: 3}
+      propertyPath: bloodSplatUp
+      value: 
+      objectReference: {fileID: 6903973796575976530, guid: a48b31bbd27e91f48bff0852206d42bb,
+        type: 3}
+    - target: {fileID: 652667463, guid: 7608e4bb54c1bb44ab953223db0014b5, type: 3}
+      propertyPath: bloodSplatDown
+      value: 
+      objectReference: {fileID: 6620233973419003145, guid: 5a52184cadcd97f408217a0bf25dbf0b,
+        type: 3}
+    - target: {fileID: 652667463, guid: 7608e4bb54c1bb44ab953223db0014b5, type: 3}
+      propertyPath: bsSpawnSideAir.Array.data[0]
+      value: 
+      objectReference: {fileID: 2016461970}
+    - target: {fileID: 652667463, guid: 7608e4bb54c1bb44ab953223db0014b5, type: 3}
+      propertyPath: bsSpawnSideAir.Array.data[1]
+      value: 
+      objectReference: {fileID: 636066373}
+    - target: {fileID: 652667463, guid: 7608e4bb54c1bb44ab953223db0014b5, type: 3}
+      propertyPath: bsSpawnSide
+      value: 
+      objectReference: {fileID: 1967275517}
+    - target: {fileID: 652667463, guid: 7608e4bb54c1bb44ab953223db0014b5, type: 3}
+      propertyPath: bsSpawnUpAir
+      value: 
+      objectReference: {fileID: 142000445}
+    - target: {fileID: 652667463, guid: 7608e4bb54c1bb44ab953223db0014b5, type: 3}
+      propertyPath: bsSpawnDownAir
+      value: 
+      objectReference: {fileID: 2099124410}
     - target: {fileID: 964885412, guid: 7608e4bb54c1bb44ab953223db0014b5, type: 3}
       propertyPath: m_TagString
       value: Player
@@ -52759,3 +52821,77 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7608e4bb54c1bb44ab953223db0014b5, type: 3}
+--- !u!1001 &7556287241252124676
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 6620233973419003140, guid: 5a52184cadcd97f408217a0bf25dbf0b,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -3.23
+      objectReference: {fileID: 0}
+    - target: {fileID: 6620233973419003140, guid: 5a52184cadcd97f408217a0bf25dbf0b,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.78
+      objectReference: {fileID: 0}
+    - target: {fileID: 6620233973419003140, guid: 5a52184cadcd97f408217a0bf25dbf0b,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -1.063303
+      objectReference: {fileID: 0}
+    - target: {fileID: 6620233973419003140, guid: 5a52184cadcd97f408217a0bf25dbf0b,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6620233973419003140, guid: 5a52184cadcd97f408217a0bf25dbf0b,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6620233973419003140, guid: 5a52184cadcd97f408217a0bf25dbf0b,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6620233973419003140, guid: 5a52184cadcd97f408217a0bf25dbf0b,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6620233973419003140, guid: 5a52184cadcd97f408217a0bf25dbf0b,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 23
+      objectReference: {fileID: 0}
+    - target: {fileID: 6620233973419003140, guid: 5a52184cadcd97f408217a0bf25dbf0b,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6620233973419003140, guid: 5a52184cadcd97f408217a0bf25dbf0b,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6620233973419003140, guid: 5a52184cadcd97f408217a0bf25dbf0b,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6620233973419003142, guid: 5a52184cadcd97f408217a0bf25dbf0b,
+        type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6620233973419003145, guid: 5a52184cadcd97f408217a0bf25dbf0b,
+        type: 3}
+      propertyPath: m_Name
+      value: BloodsplatDown
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 5a52184cadcd97f408217a0bf25dbf0b, type: 3}

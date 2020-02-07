@@ -229,7 +229,7 @@ public class ZombieJock : GroundedEnemy
                 PlayerController controller = collider[i].gameObject.GetComponent<PlayerController>();               
                 float xDistance = Player.transform.position.x - transform.position.x;
                 Vector2 knockback = new Vector2(xDistance, 0.5f).normalized;
-                controller.GetHit(35, knockback * 18);
+                controller.GetHit(35, knockback * 10);
             }
         }
     }
