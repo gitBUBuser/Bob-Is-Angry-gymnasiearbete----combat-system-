@@ -1,17 +1,18 @@
 ScriptsOnlyBuild:
   usedScripts:
     Assembly-CSharp.dll:
+    - Bloodsplat
     - BoundaryManager
     - CameraController
+    - ComboCounter
     - DestroyOnExit
     - Elevator
-    - Hand
     - MovingPlatform
     - PlayerCombat
     - PlayerController
     - PlayerFX
+    - PlayerHealthbar
     - ShakeTransform
-    - ShakeTransformEventData
     - SlideParticle
     - ZombieJock
     Unity.2D.Tilemap.Editor.dll:
@@ -52,17 +53,36 @@ ScriptsOnlyBuild:
     - UnityEngine.Rendering.UI.UIFoldout
     Unity.RenderPipelines.Universal.Runtime.dll:
     - UnityEngine.Experimental.Rendering.Universal.Light2D
+    - UnityEngine.Experimental.Rendering.Universal.PixelPerfectCamera
     - UnityEngine.Experimental.Rendering.Universal.Renderer2DData
+    - UnityEngine.Experimental.Rendering.Universal.ShadowCaster2D
     - UnityEngine.Rendering.Universal.PostProcessData
     - UnityEngine.Rendering.Universal.UniversalAdditionalCameraData
     - UnityEngine.Rendering.Universal.UniversalRenderPipelineAsset
     Unity.Rider.Editor.dll:
     - Packages.Rider.Editor.UnitTesting.CallbackData
+    Unity.ShaderGraph.Editor.dll:
+    - UnityEditor.ShaderGraph.Drawing.MaterialGraphEditWindow
+    Unity.TextMeshPro.dll:
+    - TMPro.TMP_FontAsset
+    - TMPro.TMP_Settings
+    - TMPro.TMP_SpriteAsset
+    - TMPro.TMP_StyleSheet
+    UnityEditor.Graphs.dll:
+    - UnityEditor.Graphs.AnimationBlendTree.Graph
+    - UnityEditor.Graphs.AnimationBlendTree.GraphGUI
+    - UnityEditor.Graphs.AnimationStateMachine.AnyStateNode
+    - UnityEditor.Graphs.AnimationStateMachine.Graph
+    - UnityEditor.Graphs.AnimationStateMachine.GraphGUI
+    - UnityEditor.Graphs.AnimationStateMachine.StateNode
+    - UnityEditor.Graphs.AnimatorControllerTool
     UnityEditor.TestRunner.dll:
     - UnityEditor.TestTools.TestRunner.Api.CallbacksHolder
     - UnityEditor.TestTools.TestRunner.TestListCacheData
     - UnityEditor.TestTools.TestRunner.TestRun.TestJobDataHolder
     UnityEngine.UI.dll:
+    - UnityEngine.EventSystems.EventSystem
+    - UnityEngine.EventSystems.StandaloneInputModule
     - UnityEngine.UI.Button
     - UnityEngine.UI.CanvasScaler
     - UnityEngine.UI.ContentSizeFitter
@@ -90,9 +110,15 @@ ScriptsOnlyBuild:
       Script: {instanceID: 0}
     - Class: 28
       Script: {instanceID: 0}
+    - Class: 43
+      Script: {instanceID: 0}
     - Class: 48
       Script: {instanceID: 0}
+    - Class: 49
+      Script: {instanceID: 0}
     - Class: 50
+      Script: {instanceID: 0}
+    - Class: 58
       Script: {instanceID: 0}
     - Class: 61
       Script: {instanceID: 0}
@@ -112,112 +138,134 @@ ScriptsOnlyBuild:
       Script: {instanceID: 0}
     - Class: 104
       Script: {instanceID: 0}
+    - Class: 109
+      Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 786}
+      Script: {instanceID: 814}
     - Class: 114
-      Script: {instanceID: 11388}
+      Script: {instanceID: 11416}
     - Class: 114
-      Script: {instanceID: 11450}
+      Script: {instanceID: 11560}
     - Class: 114
-      Script: {instanceID: 11532}
+      Script: {instanceID: 11702}
     - Class: 114
-      Script: {instanceID: 11674}
+      Script: {instanceID: 11734}
     - Class: 114
-      Script: {instanceID: 11706}
+      Script: {instanceID: 11856}
     - Class: 114
-      Script: {instanceID: 11828}
+      Script: {instanceID: 11866}
     - Class: 114
-      Script: {instanceID: 11838}
+      Script: {instanceID: 11954}
     - Class: 114
-      Script: {instanceID: 11926}
+      Script: {instanceID: 12014}
     - Class: 114
-      Script: {instanceID: 11986}
+      Script: {instanceID: 12168}
     - Class: 114
-      Script: {instanceID: 12140}
+      Script: {instanceID: 12194}
     - Class: 114
-      Script: {instanceID: 12166}
+      Script: {instanceID: 12236}
     - Class: 114
-      Script: {instanceID: 12208}
+      Script: {instanceID: 12382}
     - Class: 114
-      Script: {instanceID: 12354}
+      Script: {instanceID: 12634}
     - Class: 114
-      Script: {instanceID: 12606}
+      Script: {instanceID: 12684}
     - Class: 114
-      Script: {instanceID: 12656}
+      Script: {instanceID: 12770}
     - Class: 114
-      Script: {instanceID: 12742}
+      Script: {instanceID: 12962}
     - Class: 114
-      Script: {instanceID: 13080}
+      Script: {instanceID: 13038}
     - Class: 114
-      Script: {instanceID: 13374}
+      Script: {instanceID: 13108}
     - Class: 114
-      Script: {instanceID: 13444}
+      Script: {instanceID: 13402}
     - Class: 114
-      Script: {instanceID: 13514}
+      Script: {instanceID: 13472}
     - Class: 114
-      Script: {instanceID: 13624}
+      Script: {instanceID: 13542}
+    - Class: 114
+      Script: {instanceID: 13578}
     - Class: 114
       Script: {instanceID: 13654}
     - Class: 114
-      Script: {instanceID: 13830}
+      Script: {instanceID: 13684}
     - Class: 114
-      Script: {instanceID: 13856}
+      Script: {instanceID: 13860}
     - Class: 114
-      Script: {instanceID: 14026}
+      Script: {instanceID: 13886}
     - Class: 114
-      Script: {instanceID: 14054}
+      Script: {instanceID: 13920}
     - Class: 114
-      Script: {instanceID: 14142}
+      Script: {instanceID: 14058}
     - Class: 114
-      Script: {instanceID: 14236}
+      Script: {instanceID: 14086}
     - Class: 114
-      Script: {instanceID: 14282}
+      Script: {instanceID: 14144}
     - Class: 114
-      Script: {instanceID: 14428}
+      Script: {instanceID: 14176}
     - Class: 114
-      Script: {instanceID: 14504}
+      Script: {instanceID: 14270}
     - Class: 114
-      Script: {instanceID: 14526}
+      Script: {instanceID: 14316}
     - Class: 114
-      Script: {instanceID: 14604}
+      Script: {instanceID: 14462}
     - Class: 114
-      Script: {instanceID: 14694}
+      Script: {instanceID: 14538}
+    - Class: 114
+      Script: {instanceID: 14542}
+    - Class: 114
+      Script: {instanceID: 14560}
+    - Class: 114
+      Script: {instanceID: 14570}
+    - Class: 114
+      Script: {instanceID: 14638}
     - Class: 114
       Script: {instanceID: 14728}
     - Class: 114
-      Script: {instanceID: 14738}
+      Script: {instanceID: 14744}
     - Class: 114
-      Script: {instanceID: 14924}
+      Script: {instanceID: 14762}
     - Class: 114
-      Script: {instanceID: 15134}
+      Script: {instanceID: 14772}
     - Class: 114
-      Script: {instanceID: 15154}
+      Script: {instanceID: 14958}
     - Class: 114
-      Script: {instanceID: 15218}
+      Script: {instanceID: 15168}
     - Class: 114
-      Script: {instanceID: 15352}
+      Script: {instanceID: 15188}
     - Class: 114
-      Script: {instanceID: 15516}
+      Script: {instanceID: 15252}
     - Class: 114
-      Script: {instanceID: 15740}
+      Script: {instanceID: 15386}
     - Class: 114
-      Script: {instanceID: 15754}
+      Script: {instanceID: 15550}
     - Class: 114
-      Script: {instanceID: 15798}
+      Script: {instanceID: 15606}
     - Class: 114
-      Script: {instanceID: 16062}
+      Script: {instanceID: 15748}
     - Class: 114
-      Script: {instanceID: 16066}
+      Script: {instanceID: 15774}
     - Class: 114
-      Script: {instanceID: 16140}
+      Script: {instanceID: 15788}
     - Class: 114
-      Script: {instanceID: 16142}
+      Script: {instanceID: 15832}
     - Class: 114
-      Script: {instanceID: 16210}
+      Script: {instanceID: 16096}
     - Class: 114
-      Script: {instanceID: 16292}
+      Script: {instanceID: 16100}
     - Class: 114
-      Script: {instanceID: 16300}
+      Script: {instanceID: 16138}
+    - Class: 114
+      Script: {instanceID: 16174}
+    - Class: 114
+      Script: {instanceID: 16176}
+    - Class: 114
+      Script: {instanceID: 16244}
+    - Class: 114
+      Script: {instanceID: 16326}
+    - Class: 114
+      Script: {instanceID: 16334}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -241,6 +289,8 @@ ScriptsOnlyBuild:
     - Class: 224
       Script: {instanceID: 0}
     - Class: 251
+      Script: {instanceID: 0}
+    - Class: 331
       Script: {instanceID: 0}
     - Class: 19719996
       Script: {instanceID: 0}
@@ -285,7 +335,7 @@ ScriptsOnlyBuild:
     className: TMP_SelectionCaret
   - hash:
       serializedVersion: 2
-      Hash: fa66d31a8378f7565adf03fb30ab84ae
+      Hash: 7f227ded8253ca49ad6da4cb292bd675
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Hand
@@ -501,7 +551,7 @@ ScriptsOnlyBuild:
     className: InputSystemUIInputModuleEditor
   - hash:
       serializedVersion: 2
-      Hash: 64413f2f68d76c4f3359c1f1284788fd
+      Hash: 8cca40c7d0ec76ad861510c42e3f4f0f
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: ZombieJock
@@ -573,7 +623,7 @@ ScriptsOnlyBuild:
     className: NetworkProximityChecker
   - hash:
       serializedVersion: 2
-      Hash: 5961253133be5ab6176d05cf3544f659
+      Hash: f5a6efc23acc9e6624b55690b66c6ad4
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: PlayerCombat
@@ -783,7 +833,7 @@ ScriptsOnlyBuild:
     className: NetworkTransformVisualizer
   - hash:
       serializedVersion: 2
-      Hash: c048a07f6db0e5d1f4ecd540955cfd85
+      Hash: 29fa1da7d4a8d814765b44660fd0b536
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: ZombieDemonLord
@@ -835,6 +885,12 @@ ScriptsOnlyBuild:
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.UI
     className: ScrollRect
+  - hash:
+      serializedVersion: 2
+      Hash: f8b5d44acb8cf60386ca474ea4c1f307
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: PlayerHealthbar
   - hash:
       serializedVersion: 2
       Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
@@ -921,6 +977,12 @@ ScriptsOnlyBuild:
     className: RemoteTestResultSender
   - hash:
       serializedVersion: 2
+      Hash: 344dae7c6ca135fafa9789a186b867f7
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: Bloodsplat
+  - hash:
+      serializedVersion: 2
       Hash: 50c443b12ccc0b475183318b5088bcc5
     assemblyName: Unity.Postprocessing.Runtime.dll
     namespaceName: UnityEngine.Rendering.PostProcessing
@@ -997,6 +1059,12 @@ ScriptsOnlyBuild:
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: ShakeTransformEventData
+  - hash:
+      serializedVersion: 2
+      Hash: 19294cc1bf747e34e3ce2ec69eaaea45
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: ComboCounter
   - hash:
       serializedVersion: 2
       Hash: 1f0602e7bad1e0a9cba31ce292eee8bb
@@ -1155,7 +1223,7 @@ ScriptsOnlyBuild:
     className: DebugUIHandlerFloatField
   - hash:
       serializedVersion: 2
-      Hash: 45d366663cda800988c015b994c6cc71
+      Hash: 23ae89a67fcf17b93a910b4f098fb47b
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Entity
@@ -1221,7 +1289,7 @@ ScriptsOnlyBuild:
     className: Elevator
   - hash:
       serializedVersion: 2
-      Hash: 3eb9624160e2663e68aebce913871d22
+      Hash: 61fcee45241b479d38591176e429e526
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: ObstacleEnemy
@@ -1257,7 +1325,7 @@ ScriptsOnlyBuild:
     className: DebugUIHandlerVector2
   - hash:
       serializedVersion: 2
-      Hash: 0a5a343f7fb9e76822ae9475a5510687
+      Hash: 041263f2a0104f0b576142b77aaddf7f
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: GroundedEnemy
@@ -1287,7 +1355,7 @@ ScriptsOnlyBuild:
     className: CinemachineUniversalPixelPerfect
   - hash:
       serializedVersion: 2
-      Hash: 3038a081fbd76792820ae56e8b3f848d
+      Hash: cee2bb4ab55020637b6c2498528cf229
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: PlayerFX
@@ -1365,7 +1433,7 @@ ScriptsOnlyBuild:
     className: DebugUIHandlerEnumHistory
   - hash:
       serializedVersion: 2
-      Hash: 5e3a2b05687772a7d915b5ffd27e3540
+      Hash: 2a1080464b1c67c83c6919d3497c231e
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: PlayerController
@@ -1588,5 +1656,4 @@ ScriptsOnlyBuild:
   platform: 19
   scenePathNames:
   - Assets/Scenes/SampleScene.unity
-  playerPath: C:/Users/alexander.jansson5/Documents/GitHub/GymnasieArbete/GymnasieArbete
-    (tempName)/GymnasieArbete (tempName).exe
+  playerPath: "C:/Users/sdsdasdqeqwe\xF6ksjd1k2/Desktop/GymnasieArbete (tempName).exe"

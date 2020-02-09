@@ -22,6 +22,9 @@ public class PlayerFX : MonoBehaviour
     GameObject jumpingParticle;
 
     [SerializeField]
+    GameObject comboText;
+
+    [SerializeField]
     Transform bsSpawnSide,
         bsSpawnUpAir,
         bsSpawnDownAir;
@@ -33,6 +36,11 @@ public class PlayerFX : MonoBehaviour
     Transform feetPosition;
     [SerializeField]
     Transform slidePosition;
+    [SerializeField]
+    Transform comboTextPos;
+
+    [SerializeField]
+    GameObject hitParticle;
 
     ShakeTransform camShake;
 
@@ -44,6 +52,12 @@ public class PlayerFX : MonoBehaviour
     public void CamShake(ShakeTransformEventData data)
     {
         camShake.AddShakeEvent(data);
+    }
+
+    public void ComboParticle()
+    {
+        GameObject textObject = Instantiate(comboText, comboTextPos.position, Quaternion.identity);
+        textObject.GetComponent<ComboCounter>().Init(Camera.main.transform.Find("Canvas").Find("ComboCounter").GetComponent<ComboCounter>().ComboIndex);
     }
 
     public void RunParticle()
@@ -68,24 +82,33 @@ public class PlayerFX : MonoBehaviour
         //slideParticle.GetComponent<SlideParticle>().Follow = slidePosition;
     }
 
+    public void HitParticle(Vector2 position)
+    {
+        Instantiate(hitParticle, position, Quaternion.identity);
+    }
+
     public void BloodSplatSide(Vector2 position)
     {
         Instantiate(bloodSplatSideParticle, bsSpawnSide.position, transform.rotation);
+        HitParticle(bsSpawnSide.position);
     }
 
     public void BloodSplatDown(Vector2 position)
     {
         Instantiate(bloodSplatDown, bsSpawnDownAir.position, transform.rotation);
+        HitParticle(bsSpawnDownAir.position);
     }
 
     public void BloodSplatUp(Vector2 position)
     {
         Instantiate(bloodSplatUp, bsSpawnUpAir.position, transform.rotation);
+        HitParticle(bsSpawnUpAir.position);
     }
 
     public void BloodSplatSair(Transform parent, Vector2 position, int index)
     {
         GameObject test = Instantiate(bloodSpatSideAir[index], bsSpawnSideAir[index].position, transform.rotation);
+        HitParticle(bsSpawnSideAir[index].position);
     }
 
     public void DestroySlideParticle()

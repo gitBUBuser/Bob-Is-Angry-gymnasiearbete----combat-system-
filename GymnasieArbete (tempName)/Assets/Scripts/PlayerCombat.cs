@@ -30,12 +30,16 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] float downAirPushback;
     [SerializeField] float slideKnockup;
 
+    [SerializeField]
+    float comboTime;
+    float comboTimer;
+
     int sideAirIndex;
     bool dealtDamage;
     PlayerController controller;
     PlayerFX fx;
     List<Entity> hitEntities;
-
+    Entity lastHitTarget;
     enum AttackType
     {
         Side,
@@ -53,8 +57,20 @@ public class PlayerCombat : MonoBehaviour
         fx = GetComponent<PlayerFX>();
     }
 
-    public void SideAir()
+    private void Update()
     {
+        if(lastHitTarget != null)
+        {
+            if (!lastHitTarget.Stunned)
+            {
+                controller.ResetCombo();
+            }
+        }
+        
+    }
+
+    public void SideAir()
+    {     
         type = AttackType.SAir;
         Collider2D[] results = CollidersWithinCircle(pointSideAir, radiusSideAir);
         for (int i = 0; i < results.Length; i++)
@@ -91,13 +107,15 @@ public class PlayerCombat : MonoBehaviour
 
         for (int i = 0; i < results.Length; i++)
         {
-            if (!hitEntities.Contains(results[i].GetComponent<Entity>()))
-            {
-                RegisterHitIfTarget(0, Vector2.up * slideKnockup, results[i]);
-            }
-
             if (results[i].GetComponent<Entity>())
-                hitEntities.Add(results[i].GetComponent<Entity>());
+            {
+                if (!hitEntities.Contains(results[i].GetComponent<Entity>()) && results[i].gameObject != gameObject)
+                {
+                    RegisterHitIfTarget(0, Vector2.up * slideKnockup, results[i]);
+                    hitEntities.Add(results[i].GetComponent<Entity>());
+                }
+            }
+            
         }
         ResetVariables();
     }
@@ -109,6 +127,10 @@ public class PlayerCombat : MonoBehaviour
 
         for (int i = 0; i < results.Length; i++)
         {
+            if (results[i].gameObject == gameObject)
+            {
+                continue;
+            }
             RegisterHitIfTarget(dmgNeutralAir, Vector2.zero, results[i]);
             ParticleIfTarget(results[i]);
         }
@@ -124,6 +146,10 @@ public class PlayerCombat : MonoBehaviour
 
         for (int i = 0; i < results.Length; i++)
         {
+            if (results[i].gameObject == gameObject)
+            {
+                continue;
+            }
             RegisterHitIfTarget(dmgNeutralAir, Vector2.up * 8, results[i]);
             ParticleIfTarget(results[i]);
         }
@@ -134,23 +160,29 @@ public class PlayerCombat : MonoBehaviour
     {
         if (collider.GetComponent<Entity>() && collider.gameObject != gameObject)
         {
-            Time.timeScale = 0.1f;
+            Entity enemy = collider.GetComponent<Entity>();
+            if (enemy)
+            {
+                if(lastHitTarget == enemy)
+                {
+                    comboTimer = 0;
+                    controller.ComboPlus();
+                    fx.ComboParticle();
+                }
+                else
+                {
+                    controller.ResetCombo();
+                }
+            }
+           
+            lastHitTarget = enemy;
+            //Time.timeScale = 0.1f;
             collider.GetComponent<Entity>().GetHit(damage, knockback);
-            StartCoroutine(LerpTimeBack(0.1f));
+           // StartCoroutine(LerpTimeBack(0.1f));
             dealtDamage = true;
         }
     }
 
-    void DealDamageIfTarget(int damage, Collider2D collider)
-    {
-        if (collider.GetComponent<Entity>() && collider.gameObject != gameObject)
-        {
-            Time.timeScale = 0.1f;
-         //   collider.GetComponent<IHealth>().TakeDamage(damage);
-            StartCoroutine(LerpTimeBack(0.2f));
-            dealtDamage = true;
-        }
-    }
 
     IEnumerator LerpTimeBack(float seconds)
     {

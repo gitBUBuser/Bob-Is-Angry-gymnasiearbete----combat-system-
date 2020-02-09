@@ -219,13 +219,14 @@ public class ZombieJock : GroundedEnemy
 
     void RegisterAttack()
     {
-        Collider2D[] collider = Physics2D.OverlapBoxAll(attackT.position,
-            new Vector2(4f, 1.2f), playerLayer);
+        Collider2D[] collider = Physics2D.OverlapAreaAll(new Vector2(transform.position.x - 3f, attackT.position.y + 0.25f),
+            new Vector2(transform.position.x + 3f, attackT.position.y - 0.25f));
 
         for (int i = 0; i < collider.Length; i++)
         {
             if (collider[i].gameObject.GetComponent<PlayerController>())
             {
+
                 PlayerController controller = collider[i].gameObject.GetComponent<PlayerController>();               
                 float xDistance = Player.transform.position.x - transform.position.x;
                 Vector2 knockback = new Vector2(xDistance, 0.5f).normalized;
@@ -253,7 +254,7 @@ public class ZombieJock : GroundedEnemy
         Gizmos.DrawWireSphere(transform.position, maxJumpDistance);
         Gizmos.DrawWireSphere(transform.position, minJumpDistance);
         Gizmos.color = Color.red;
-        Gizmos.DrawWireCube(attackT.position, new Vector3(4, 1.2f, 0));
+        Gizmos.DrawWireCube(attackT.position, new Vector3(6, 0.5f, 0));
     }
 
 

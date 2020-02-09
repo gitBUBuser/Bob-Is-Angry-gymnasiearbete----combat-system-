@@ -124,8 +124,8 @@ public class GroundedEnemy : Entity
             float angle = Vector2.Angle(transform.right, difference) * sign;
             if (angle < viewAngle && angle > -viewAngle)
             {
-                Debug.Log(Physics2D.Raycast(transform.position, Player.transform.position - transform.position, 100, ~inWayOfView).transform);
-                return Physics2D.Raycast(transform.position, Player.transform.position - transform.position, 100, ~inWayOfView).transform.tag == "Player";
+              
+                return (Physics2D.Raycast(transform.position, Player.transform.position - transform.position, 100, ~inWayOfView).transform.tag == "Player");
             }
         }
         return false;

@@ -77,6 +77,16 @@ public class PlayerController : Entity
         fx.CamShake(data);
     }
 
+    public void ComboPlus()
+    {
+        Camera.main.transform.Find("Canvas").Find("ComboCounter").GetComponent<ComboCounter>().Combo();
+    }
+
+    public void ResetCombo()
+    {
+        Camera.main.transform.Find("Canvas").Find("ComboCounter").GetComponent<ComboCounter>().Reset();
+    }
+
     public override void GetHit(int damage, Vector2 knockback)
     {
         if (!Stunned)

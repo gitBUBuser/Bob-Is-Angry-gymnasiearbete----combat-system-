@@ -8,6 +8,11 @@ public class Entity : MonoBehaviour
     Rigidbody2D rigidBody;
 
     [SerializeField]
+    Material whiteMat;
+
+    Material defaultMat;
+
+    [SerializeField]
     LayerMask groundLayer;
     [SerializeField]
     CapsuleCollider2D worldCollider;
@@ -33,6 +38,7 @@ public class Entity : MonoBehaviour
 
     protected virtual void Start()
     {
+        defaultMat = GetComponent<SpriteRenderer>().material;
         currentHealth = maxHealth;
         orgMaxSpeed = maxSpeed;
         rigidBody = GetComponent<Rigidbody2D>();
@@ -42,6 +48,7 @@ public class Entity : MonoBehaviour
     public virtual void GetHit(int damage, Vector2 knockback)
     {
         Stun();
+        StartCoroutine(HitMat());
         TakeDamage(damage);
         RB.velocity = knockback;
     }
@@ -74,7 +81,7 @@ public class Entity : MonoBehaviour
     bool Grounded()
     {
         Vector2 offset = worldCollider.offset - new Vector2(0, worldCollider.size.y / 2);
-        return Physics2D.OverlapCircle((Vector2)transform.position + offset, 0.2f, groundLayer);
+        return Physics2D.OverlapCircle((Vector2)transform.position + offset, 0.1f, groundLayer);
     }
 
     public bool Patted()
@@ -141,6 +148,13 @@ public class Entity : MonoBehaviour
     protected virtual void OnGroundedEnter()
     {
       
+    }
+
+    IEnumerator HitMat()
+    {
+        GetComponent<SpriteRenderer>().material = whiteMat;
+        yield return new WaitForSeconds(0.2f);
+        GetComponent<SpriteRenderer>().material = defaultMat;
     }
 
     protected virtual void OnGroundedExit()
