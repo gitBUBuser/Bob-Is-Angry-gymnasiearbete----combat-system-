@@ -11,12 +11,10 @@ A high-school project: a 2D Unity/C# game prototype focused on building a player
 
 ## Where to look
 
-- `GymnasieArb.../Assets/Scripts/PlayerController.cs` — player movement and state transitions.
-- `GymnasieArb.../Assets/Scripts/PlayerCombat.cs` — attacks, hit detection, and combo-related logic.
-- `GymnasieArb.../Assets/Scripts/Entity.cs` — shared health, movement, and hit behavior.
-- `GymnasieArb.../Assets/Scenes/SampleScene.unity` — included Unity scene.
-
-(The full project directory is named `GymnasieArbete (tempName)` in the repository.)
+- `GymnasieArbete (tempName)/Assets/Scripts/PlayerController.cs` — player movement and state transitions.
+- `GymnasieArbete (tempName)/Assets/Scripts/PlayerCombat.cs` — attacks, hit detection, and combo-related logic.
+- `GymnasieArbete (tempName)/Assets/Scripts/Entity.cs` — shared health, movement, and hit behavior.
+- `GymnasieArbete (tempName)/Assets/Scenes/SampleScene.unity` — included Unity scene.
 
 ## Opening the project
 
